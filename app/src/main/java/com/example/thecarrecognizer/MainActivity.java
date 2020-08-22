@@ -5,11 +5,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.loader.ResourcesLoader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
@@ -23,6 +26,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -76,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onRemoteEvalClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //File newFile = new File("https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing", "tmpCarPhoto.png");
+                Bitmap decodedRecentPhoto = decodePhoto();
+                String urlText = "https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing";
 
             }
         };
@@ -96,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String chooseFromGallery = "Choose from Gallery";
     private static final String backStr = "Back";
 
-    String currentPhotoPath;
+    String currentPhotoPath = "";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_CHOOSE_FROM_GALLERY = 2;
@@ -183,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (requestCode == REQUEST_CHOOSE_FROM_GALLERY) {
                 Uri selectedPhotoUri = data.getData();
+                currentPhotoPath = selectedPhotoUri.getPath();
                 mainImageView.setImageURI(selectedPhotoUri);
             }
         }
@@ -202,24 +212,33 @@ public class MainActivity extends AppCompatActivity {
         return photo;
     }
 
+    private Bitmap decodePhoto() {
+        Bitmap resultBitmap = null;
+        if (!currentPhotoPath.equals("")) {
+            int targetWidth = mainImageView.getWidth();
+            int targetHeight = mainImageView.getHeight();
+
+            BitmapFactory.Options bmfOptions = new BitmapFactory.Options();
+            bmfOptions.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
+
+            int photoWidth = bmfOptions.outWidth;
+            int photoHeight = bmfOptions.outHeight;
+
+            int scaleFactor = Math.max(1, Math.min(photoWidth / targetWidth, photoHeight / targetHeight));
+
+            bmfOptions.inJustDecodeBounds = false;
+            bmfOptions.inSampleSize = scaleFactor;
+            resultBitmap = BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
+
+        } else {
+            resultBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.porsche_911_gts);
+        }
+        return resultBitmap;
+    }
+
     private void decodeAndShowPhoto() {
-        int targetWidth = mainImageView.getWidth();
-        int targetHeight = mainImageView.getHeight();
-
-        BitmapFactory.Options bmfOptions = new BitmapFactory.Options();
-        bmfOptions.inJustDecodeBounds = true;
-
-        BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
-
-        int photoWidth = bmfOptions.outWidth;
-        int photoHeight = bmfOptions.outHeight;
-
-        int scaleFactor = Math.max(1, Math.min(photoWidth/targetWidth, photoHeight/ targetHeight));
-
-        bmfOptions.inJustDecodeBounds = false;
-        bmfOptions.inSampleSize = scaleFactor;
-
-        Bitmap resultBitmap = BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
+        Bitmap resultBitmap = decodePhoto();
         mainImageView.setImageBitmap(resultBitmap);
     }
 }
