@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#242424</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#bbbbbb</color>
+
+    <color name="PitchBlack">#000000</color>
+    <color name="White">#FFFFFF</color>
+    <color name="DarkCyberGrapePurple">#58427c</color>
+    <color name="LightCyberBlue">#00dfff</color>
+    <color name="CyberGrey">#bbbbbb</color>
+    <color name="CyberBlack">#242424</color>
+    <color name="CyberBlue">#3a00f9</color>
+    <color name="NotWhite">#DBE2E2</color>
+    <color name="Grey">#777777</color>
+</resources>
