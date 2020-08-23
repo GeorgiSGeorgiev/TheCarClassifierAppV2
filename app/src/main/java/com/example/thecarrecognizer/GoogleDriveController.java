@@ -20,13 +20,12 @@ public class GoogleDriveController {
         this.driveService = driveService;
     }
 
-    public Task<String> CreateImageFile(String filePath) {
+    public Task<String> CreateImageFile(java.io.File inputFile) {
         return Tasks.call(driveExecutor, () -> {
             File fileMetaData = new File();
             fileMetaData.setName("TheImage");
 
-            java.io.File file = new java.io.File(filePath);
-            FileContent mediaContent = new FileContent("application/png", file);
+            FileContent mediaContent = new FileContent("application/png", inputFile);
 
             File driveFile = null;
             try {

@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         final ImageView backgroundView = findViewById(R.id.backgroundImageView);
 
+        requestSignIn();
+
         View.OnClickListener onThemeBtnClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,11 +106,10 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onRemoteEvalClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestSignIn();
+
                 //File newFile = new File("https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing", "tmpCarPhoto.png");
                 Bitmap decodedRecentPhoto = decodePhoto();
-                String urlText = "https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing";
-
+                uploadImage(view);
             }
         };
 
@@ -262,6 +263,40 @@ public class MainActivity extends AppCompatActivity {
     public void uploadImage(View view) {
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this);
         dialog.show();
+
+        File f = new File(this.getCacheDir(), "temp.png");
+
+        Bitmap bitmap = decodePhoto();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        googleDriveController.CreateImageFile(f)
+                .addOnSuccessListener(new OnSuccessListener<String>() {
+                    @Override
+                    public void onSuccess(String s) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        dialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     private File createPhotoFile() throws IOException {

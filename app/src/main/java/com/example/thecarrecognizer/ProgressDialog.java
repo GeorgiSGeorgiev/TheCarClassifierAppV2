@@ -11,7 +11,6 @@ class ProgressDialogBuilder {
         AlertDialog.Builder builder = new AlertDialog.Builder(currentContext);
         builder.setCancelable(false); // if you want user to wait for some process to finish,
         builder.setView(R.layout.progress_bar_dialog_layout);
-        AlertDialog resultDialog = builder.create();
-        return resultDialog;
+        return builder.create();
     }
 }
