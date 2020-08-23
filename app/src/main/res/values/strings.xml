@@ -6,6 +6,7 @@
     <string name="select_cnn">Select CNN</string>
     <string name="select_car_photo">Select Car Photo</string>
     <string name="current_photo">Currently selected photo:</string>
-    <string name="evaluate">Evaluate</string>
+    <string name="evaluate" translatable="false">Evaluate</string>
     <string name="remote_eval">Remote Eval</string>
+    <string name="uploading_to_Drive">Uploading to Google Drive</string>
 </resources>

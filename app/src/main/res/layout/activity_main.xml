@@ -51,7 +51,8 @@
             app:layout_constraintVertical_bias="0.034"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0" app:layout_constraintTop_toBottomOf="@+id/mainImageView"
-            android:theme="@style/AppTheme.CyberLightBlueButton"/>
+            android:theme="@style/AppTheme.CyberLightBlueButton"
+            android:onClick="selectPhoto"/>
     <Button
             android:text="@string/evaluate"
             android:layout_width="170dp"

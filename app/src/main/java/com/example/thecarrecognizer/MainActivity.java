@@ -2,6 +2,7 @@ package com.example.thecarrecognizer;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,21 +17,36 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.*;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     Button selectPhotoButton;
@@ -38,8 +54,21 @@ public class MainActivity extends AppCompatActivity {
     ImageView mainImageView;
     public static int backgroundColor = Color.WHITE;
 
+    GoogleDriveController googleDriveController;
+
+
+    static final int REQUEST_GOOGLE_SIGN_IN = 0;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static final int REQUEST_CHOOSE_FROM_GALLERY = 2;
+
+    private static final int CAMERA_PERMISSION_CODE = 100;
+    private static final int STORAGE_PERMISSION_CODE = 101;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -72,16 +101,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        View.OnClickListener onPhotoSelect = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                selectPhoto();
-            }
-        };
-
         View.OnClickListener onRemoteEvalClick = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                requestSignIn();
                 //File newFile = new File("https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing", "tmpCarPhoto.png");
                 Bitmap decodedRecentPhoto = decodePhoto();
                 String urlText = "https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing";
@@ -90,7 +113,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         changeThemeButton.setOnClickListener(onThemeBtnClick);
-        selectPhotoButton.setOnClickListener(onPhotoSelect);
         remoteEvalButton.setOnClickListener(onRemoteEvalClick);
     }
 
@@ -100,6 +122,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void requestSignIn() {
+        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                .build();
+
+        GoogleSignInClient googleClient = GoogleSignIn.getClient(this, signInOptions);
+        startActivityForResult(googleClient.getSignInIntent(), REQUEST_GOOGLE_SIGN_IN);
+    }
+
 
     private static final String takePhoto = "Take Photo";
     private static final String chooseFromGallery = "Choose from Gallery";
@@ -107,13 +139,9 @@ public class MainActivity extends AppCompatActivity {
 
     String currentPhotoPath = "";
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    static final int REQUEST_CHOOSE_FROM_GALLERY = 2;
 
-    private static final int CAMERA_PERMISSION_CODE = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
 
-    private void selectPhoto() {
+    public void selectPhoto(View view) {
         final String[] options = { takePhoto, chooseFromGallery, backStr };
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
         //alertDiaBuilder.setTitle("");
@@ -183,19 +211,57 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Activity handling method
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                decodeAndShowPhoto();
-            }
-            else if (requestCode == REQUEST_CHOOSE_FROM_GALLERY) {
-                Uri selectedPhotoUri = data.getData();
-                currentPhotoPath = selectedPhotoUri.getPath();
-                mainImageView.setImageURI(selectedPhotoUri);
+            switch (requestCode) {
+                case REQUEST_GOOGLE_SIGN_IN:
+                    handleSignInIntent(data);
+                    break;
+                case REQUEST_IMAGE_CAPTURE:
+                    decodeAndShowPhoto();
+                    break;
+                case REQUEST_CHOOSE_FROM_GALLERY:
+                    Uri selectedPhotoUri = data.getData();
+                    currentPhotoPath = selectedPhotoUri.getPath();
+                    mainImageView.setImageURI(selectedPhotoUri);
+                    break;
             }
         }
+    }
+
+    private void handleSignInIntent(Intent data) {
+        GoogleSignIn.getSignedInAccountFromIntent(data)
+                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                        // on success we already have the user credentials and we have to do the sign in operation
+                        GoogleAccountCredential credential = GoogleAccountCredential
+                                .usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                        credential.setSelectedAccount(googleSignInAccount.getAccount());
+
+                        Drive googleDriveService = new Drive
+                                .Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+                                .setApplicationName("The Car Classifier")
+                                .build();
+
+                        googleDriveController = new GoogleDriveController(googleDriveService);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                        System.out.println(e.getMessage());
+                    }
+                });
+    }
+
+    public void uploadImage(View view) {
+        AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this);
+        dialog.show();
     }
 
     private File createPhotoFile() throws IOException {
