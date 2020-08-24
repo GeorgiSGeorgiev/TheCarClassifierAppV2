@@ -8,9 +8,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
@@ -32,9 +32,7 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
 
 
-
+    // This method is called on application start
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -69,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         mainImageView = findViewById(R.id.mainImageView);
 
         final ImageView backgroundView = findViewById(R.id.backgroundImageView);
+
+        this.currentPhotoBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.porsche_911_gts);
 
         requestSignIn();
 
@@ -95,11 +95,13 @@ public class MainActivity extends AppCompatActivity {
         remoteEvalButton.setOnClickListener(onRemoteEvalClick);
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
 
     private void requestSignIn() {
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -117,13 +119,13 @@ public class MainActivity extends AppCompatActivity {
     private static final String backStr = "Back";
 
     String currentPhotoPath = "";
+    Bitmap currentPhotoBitmap;
 
 
 
     public void selectPhoto(View view) {
         final String[] options = { takePhoto, chooseFromGallery, backStr };
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
-        //alertDiaBuilder.setTitle("");
         DialogInterface.OnClickListener dialogOnClickL = (dialogInterface, i) -> {
             switch (options[i]) {
                 case takePhoto:
@@ -151,15 +153,16 @@ public class MainActivity extends AppCompatActivity {
         File resultPhotoFile = null;
         try {
             // try to save the photo
-            resultPhotoFile = createPhotoFile();
+            resultPhotoFile = ImageBuilder.createEmptyPhotoFile(this);
+            currentPhotoPath = resultPhotoFile.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
         }
         // if the file with the photo was created then continue
         if (resultPhotoFile != null) {
-            //System.out.println(resultPhotoFile.toPath());
             Uri resultPhotoURI = FileProvider.getUriForFile( this,
                     "com.example.android.file_provider", resultPhotoFile);
+            // save the actual photo to the photo file via an intent
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, resultPhotoURI);
             try {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -179,12 +182,6 @@ public class MainActivity extends AppCompatActivity {
                     new String[] { permission },
                     requestCode);
         }
-        else {
-            Toast.makeText(MainActivity.this,
-                    "Permission already granted",
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
     }
 
     // Activity handling method
@@ -197,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
                     handleSignInIntent(data);
                     break;
                 case REQUEST_IMAGE_CAPTURE:
-                    decodeAndShowPhoto();
+                    this.currentPhotoBitmap = ImageBuilder.decodeAndShowPhoto(this, currentPhotoPath, mainImageView);
                     break;
                 case REQUEST_CHOOSE_FROM_GALLERY:
                     Uri selectedPhotoUri = data.getData();
-                    currentPhotoPath = selectedPhotoUri.getPath();
                     mainImageView.setImageURI(selectedPhotoUri);
+                    this.currentPhotoBitmap = ((BitmapDrawable)mainImageView.getDrawable()).getBitmap();
                     break;
             }
         }
@@ -230,28 +227,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void uploadImage(View view) {
-        AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this);
+        File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
+
+        AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
         dialog.show();
-
-        File tempFile = new File(this.getCacheDir(), "temp.png");
-
-        Bitmap bitmap = decodePhoto();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-        byte[] bitmapData = bos.toByteArray();
-
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(tempFile);
-            fos.write(bitmapData);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        googleDriveController.CreateImageFile(tempFile)
+        googleDriveController.CreateImageFile(resultFile, "TheCarPhoto.png")
                 .addOnSuccessListener(s -> {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
@@ -260,49 +240,5 @@ public class MainActivity extends AppCompatActivity {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
                 });
-    }
-
-    private File createPhotoFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String photoFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File photo = File.createTempFile(
-                photoFileName,
-                ".jpg",
-                storageDir
-        );
-        currentPhotoPath = photo.getAbsolutePath();
-        System.out.println(currentPhotoPath);
-        return photo;
-    }
-
-    private Bitmap decodePhoto() {
-        Bitmap resultBitmap;
-        if (!currentPhotoPath.equals("")) {
-            int targetWidth = mainImageView.getWidth();
-            int targetHeight = mainImageView.getHeight();
-
-            BitmapFactory.Options bmfOptions = new BitmapFactory.Options();
-            bmfOptions.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
-
-            int photoWidth = bmfOptions.outWidth;
-            int photoHeight = bmfOptions.outHeight;
-
-            int scaleFactor = Math.max(1, Math.min(photoWidth / targetWidth, photoHeight / targetHeight));
-
-            bmfOptions.inJustDecodeBounds = false;
-            bmfOptions.inSampleSize = scaleFactor;
-            resultBitmap = BitmapFactory.decodeFile(currentPhotoPath, bmfOptions);
-
-        } else {
-            resultBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.porsche_911_gts);
-        }
-        return resultBitmap;
-    }
-
-    private void decodeAndShowPhoto() {
-        Bitmap resultBitmap = decodePhoto();
-        mainImageView.setImageBitmap(resultBitmap);
     }
 }

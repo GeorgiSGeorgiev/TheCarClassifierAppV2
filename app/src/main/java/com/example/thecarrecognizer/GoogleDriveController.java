@@ -2,7 +2,6 @@ package com.example.thecarrecognizer;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.api.client.googleapis.batch.BatchRequest;
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
@@ -17,13 +16,13 @@ public class GoogleDriveController {
 
     // An object that executes submitted Runnable tasks
     private final Executor driveExecutor = Executors.newSingleThreadExecutor();
-    private Drive driveService;
+    private final Drive driveService;
 
     public GoogleDriveController(Drive driveService) {
         this.driveService = driveService;
     }
 
-    public Task<String> CreateImageFile(java.io.File inputFile) {
+    public Task<String> CreateImageFile(java.io.File inputFile, String fileName) {
         return Tasks.call(driveExecutor, () -> {
             // Create new folder
             File folderMetadata = new File();
@@ -41,7 +40,7 @@ public class GoogleDriveController {
 
             // Create new file that contains the car photo and put it inside the new Drive folder
             File fileMetaData = new File();
-            fileMetaData.setName("TheImage.png");
+            fileMetaData.setName(fileName);
             fileMetaData.setParents(Collections.singletonList(driveFolder.getId()));
 
             // the content of the Image file
