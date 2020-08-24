@@ -2,35 +2,29 @@ package com.example.thecarrecognizer;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.loader.ResourcesLoader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.View;
-import android.widget.*;
-import androidx.annotation.NonNull;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -38,14 +32,9 @@ import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -83,35 +72,24 @@ public class MainActivity extends AppCompatActivity {
 
         requestSignIn();
 
-        View.OnClickListener onThemeBtnClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Button theB = (Button) view;
-                switch (backgroundColor) {
-                    case Color.WHITE:
-                        ViewExtensions.ChangeButtonColor(theB, Color.WHITE, Color.BLACK);
-                        backgroundColor = Color.BLACK;
-                        backgroundView.setBackgroundColor(Color.rgb(36,36,36));
-                        // (36,36,36) is the cyber black color
-                        break;
-                    case Color.BLACK:
-                        ViewExtensions.ChangeButtonColor(theB, Color.BLACK, Color.WHITE);
-                        backgroundColor = Color.WHITE;
-                        backgroundView.setBackgroundColor(Color.WHITE);
-                        break;
-                }
+        View.OnClickListener onThemeBtnClick = view -> {
+            Button theB = (Button) view;
+            switch (backgroundColor) {
+                case Color.WHITE:
+                    ViewExtensions.ChangeButtonColor(theB, Color.WHITE, Color.BLACK);
+                    backgroundColor = Color.BLACK;
+                    backgroundView.setBackgroundColor(Color.rgb(36,36,36));
+                    // (36,36,36) is the cyber black color
+                    break;
+                case Color.BLACK:
+                    ViewExtensions.ChangeButtonColor(theB, Color.BLACK, Color.WHITE);
+                    backgroundColor = Color.WHITE;
+                    backgroundView.setBackgroundColor(Color.WHITE);
+                    break;
             }
         };
 
-        View.OnClickListener onRemoteEvalClick = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //File newFile = new File("https://drive.google.com/drive/folders/18_F9BIliBzKUSTk5JUmTqn1Jjp2F7IV0?usp=sharing", "tmpCarPhoto.png");
-                Bitmap decodedRecentPhoto = decodePhoto();
-                uploadImage(view);
-            }
-        };
+        View.OnClickListener onRemoteEvalClick = this::uploadImage;
 
         changeThemeButton.setOnClickListener(onThemeBtnClick);
         remoteEvalButton.setOnClickListener(onRemoteEvalClick);
@@ -146,21 +124,18 @@ public class MainActivity extends AppCompatActivity {
         final String[] options = { takePhoto, chooseFromGallery, backStr };
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
         //alertDiaBuilder.setTitle("");
-        DialogInterface.OnClickListener dialogOnClickL = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                switch (options[i]) {
-                    case takePhoto:
-                        TakePhotoIntent();
-                        break;
-                    case chooseFromGallery:
-                        Intent intent1 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                        startActivityForResult(intent1, REQUEST_CHOOSE_FROM_GALLERY);
-                        break;
-                    case backStr:
-                        dialogInterface.dismiss();
-                        break;
-                }
+        DialogInterface.OnClickListener dialogOnClickL = (dialogInterface, i) -> {
+            switch (options[i]) {
+                case takePhoto:
+                    TakePhotoIntent();
+                    break;
+                case chooseFromGallery:
+                    Intent intent1 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    startActivityForResult(intent1, REQUEST_CHOOSE_FROM_GALLERY);
+                    break;
+                case backStr:
+                    dialogInterface.dismiss();
+                    break;
             }
         };
         alertDiaBuilder.setItems(options, dialogOnClickL);
@@ -235,28 +210,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleSignInIntent(Intent data) {
         GoogleSignIn.getSignedInAccountFromIntent(data)
-                .addOnSuccessListener(new OnSuccessListener<GoogleSignInAccount>() {
-                    @Override
-                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                        // on success we already have the user credentials and we have to do the sign in operation
-                        GoogleAccountCredential credential = GoogleAccountCredential
-                                .usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
-                        credential.setSelectedAccount(googleSignInAccount.getAccount());
+                .addOnSuccessListener(googleSignInAccount -> {
+                    // on success we already have the user credentials and we have to do the sign in operation
+                    GoogleAccountCredential credential = GoogleAccountCredential
+                            .usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
+                    credential.setSelectedAccount(googleSignInAccount.getAccount());
 
-                        Drive googleDriveService = new Drive
-                                .Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
-                                .setApplicationName("The Car Classifier")
-                                .build();
+                    Drive googleDriveService = new Drive
+                            .Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
+                            .setApplicationName("The Car Classifier")
+                            .build();
 
-                        googleDriveController = new GoogleDriveController(googleDriveService);
-                    }
+                    googleDriveController = new GoogleDriveController(googleDriveService);
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        e.printStackTrace();
-                        System.out.println(e.getMessage());
-                    }
+                .addOnFailureListener(e -> {
+                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 });
     }
 
@@ -264,17 +233,17 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this);
         dialog.show();
 
-        File f = new File(this.getCacheDir(), "temp.png");
+        File tempFile = new File(this.getCacheDir(), "temp.png");
 
         Bitmap bitmap = decodePhoto();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-        byte[] bitmapdata = bos.toByteArray();
+        byte[] bitmapData = bos.toByteArray();
 
-        FileOutputStream fos = null;
+        FileOutputStream fos;
         try {
-            fos = new FileOutputStream(f);
-            fos.write(bitmapdata);
+            fos = new FileOutputStream(tempFile);
+            fos.write(bitmapData);
             fos.flush();
             fos.close();
         } catch (FileNotFoundException e) {
@@ -282,20 +251,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        googleDriveController.CreateImageFile(f)
-                .addOnSuccessListener(new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String s) {
-                        dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
-                    }
+        googleDriveController.CreateImageFile(tempFile)
+                .addOnSuccessListener(s -> {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        dialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
-                    }
+                .addOnFailureListener(e -> {
+                    dialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -314,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Bitmap decodePhoto() {
-        Bitmap resultBitmap = null;
+        Bitmap resultBitmap;
         if (!currentPhotoPath.equals("")) {
             int targetWidth = mainImageView.getWidth();
             int targetHeight = mainImageView.getHeight();
