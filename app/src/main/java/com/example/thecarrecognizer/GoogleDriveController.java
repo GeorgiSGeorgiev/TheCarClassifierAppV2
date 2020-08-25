@@ -5,10 +5,13 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.api.client.http.FileContent;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -24,12 +27,15 @@ public class GoogleDriveController {
 
     public Task<String> CreateImageFile(java.io.File inputFile, String fileName) {
         return Tasks.call(driveExecutor, () -> {
+            String folderName = "CarPhotos_TheCarClassifier";
+            File driveFolder;
             // Create new folder
             File folderMetadata = new File();
-            folderMetadata.setName("CarPhotos_TheCarClassifier");
+
+            folderMetadata.setName(folderName);
             folderMetadata.setMimeType("application/vnd.google-apps.folder");
 
-            File driveFolder = driveService.files().create(folderMetadata)
+            driveFolder = driveService.files().create(folderMetadata)
                     .setFields("id")
                     .execute();
 
@@ -44,7 +50,7 @@ public class GoogleDriveController {
             fileMetaData.setParents(Collections.singletonList(driveFolder.getId()));
 
             // the content of the Image file
-            FileContent mediaContent = new FileContent("application/png", inputFile);
+            FileContent mediaContent = new FileContent("image/png", inputFile);
 
             File driveFile = null;
             try {
@@ -67,8 +73,55 @@ public class GoogleDriveController {
             if (driveFile == null) {
                 throw new IOException("The result drive file is null after its creation.");
             }
-
+            /*List<File> fl = retrieveAllFiles(this.driveService);
+            for (int i = 0; i < fl.size(); i++) {
+                System.out.println(fl.get(i).getName());
+            }
+            System.out.flush();
+            System.out.println();*/
+            //WriteAllFiles();
             return driveFile.getId();
         });
+    }
+
+    private static List<File> retrieveAllFiles(Drive service) throws IOException {
+        List<File> result = new ArrayList<File>();
+        Drive.Files.List request = service.files().list();
+
+        do {
+            try {
+                FileList files = request.execute();
+
+                result.addAll(files.getFiles());
+                request.setPageToken(files.getNextPageToken());
+            } catch (IOException e) {
+                System.out.println("An error occurred: " + e);
+                request.setPageToken(null);
+            }
+        } while (request.getPageToken() != null &&
+                request.getPageToken().length() > 0);
+
+        return result;
+    }
+
+    public void WriteAllFiles() {
+        String pageToken = null;
+        do {
+            FileList result = null;
+            try {
+                result = driveService.files().list()
+                        /*.setSpaces("drive")*/
+                        .setFields("nextPageToken, files(id, name)")
+                        .setPageToken(pageToken)
+                        .execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            for (File file : result.getFiles()) {
+                System.out.printf("Found file: %s (%s)\n",
+                        file.getName(), file.getId());
+            }
+            pageToken = result.getNextPageToken();
+        } while (pageToken != null);
     }
 }
