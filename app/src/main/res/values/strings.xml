@@ -10,4 +10,5 @@
     <string name="remote_eval">Remote Eval</string>
     <string name="uploading_to_Drive">Uploading to Google Drive</string>
     <string name="reformatting_photo">Reformatting photo</string>
+    <string name="default_drive_file_name">CarPhotoAndInfo_TheCarClassifierApp</string>
 </resources>

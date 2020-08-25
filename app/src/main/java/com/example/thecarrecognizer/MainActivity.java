@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.currentPhotoBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.porsche_911_gts);
 
-        requestSignIn();
-
         View.OnClickListener onThemeBtnClick = view -> {
             Button theB = (Button) view;
             switch (backgroundColor) {
@@ -89,10 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        View.OnClickListener onRemoteEvalClick = this::uploadImage;
-
         changeThemeButton.setOnClickListener(onThemeBtnClick);
-        remoteEvalButton.setOnClickListener(onRemoteEvalClick);
     }
 
 
@@ -103,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void requestSignIn() {
+    public void requestSignIn(View view) {
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
@@ -120,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
     String currentPhotoPath = "";
     Bitmap currentPhotoBitmap;
+    final String defaultAppDriveFolderName = "CarPhotoAndInfo_TheCarClassifierApp";
 
 
 
@@ -218,7 +214,8 @@ public class MainActivity extends AppCompatActivity {
                             .setApplicationName("The Car Classifier")
                             .build();
 
-                    googleDriveController = new GoogleDriveController(googleDriveService);
+                    googleDriveController = new GoogleDriveController(googleDriveService, this.defaultAppDriveFolderName);
+                    createUploadPhotoWarningDialog();
                 })
                 .addOnFailureListener(e -> {
                     e.printStackTrace();
@@ -226,12 +223,21 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void uploadImage(View view) {
+    private void createUploadPhotoWarningDialog() {
+        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
+        String alertMessage = String.format("Warning! To keep your Google Drive root directory clean the application will delete all files and folders named: %s", this.defaultAppDriveFolderName);
+        alertDiaBuilder.setMessage(alertMessage)
+                .setPositiveButton("Proceed", (dialog, id) -> uploadImage())
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+        alertDiaBuilder.show();
+    }
+
+    public void uploadImage() {
         File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
 
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
         dialog.show();
-        googleDriveController.CreateImageFile(resultFile, "TheCarPhoto.png")
+        googleDriveController.createImageFile(resultFile, "TheCarPhoto.png")
                 .addOnSuccessListener(s -> {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();

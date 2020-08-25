@@ -23,7 +23,8 @@
             app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/infoTextView"
             app:layout_constraintVertical_bias="0.813"
-            app:layout_constraintBottom_toTopOf="@+id/mainImageView" app:layout_constraintTop_toBottomOf="@+id/selectCNNbutton"/>
+            app:layout_constraintBottom_toTopOf="@+id/mainImageView"
+            app:layout_constraintTop_toBottomOf="@+id/selectCNNbutton"/>
     <Button
             android:text="@string/theme"
             android:layout_width="110dp"
@@ -68,7 +69,9 @@
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
             app:layout_constraintHorizontal_bias="0.709" app:layout_constraintVertical_bias="0.542"
-            android:theme="@style/AppTheme.NotWhiteButton" app:layout_constraintStart_toEndOf="@+id/evalButton"/>
+            android:theme="@style/AppTheme.NotWhiteButton"
+            app:layout_constraintStart_toEndOf="@+id/evalButton"
+            android:onClick="requestSignIn"/>
     <ImageView
             android:layout_width="401dp"
             android:layout_height="227dp" app:srcCompat="@drawable/porsche_911_gts" android:id="@+id/mainImageView"
