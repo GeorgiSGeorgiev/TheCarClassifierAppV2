@@ -36,11 +36,12 @@ public class GoogleDriveController {
 
             // Create a new folder with the given name
             File driveFolder = this.createNewDriveFolderFromTheRoot(folderName);
+            this.addNewWritePermissionToUser(driveFolder.getId(), "gogi.gig.99@gmail.com");
 
             // Create new file that contains the car photo and put it inside the new Drive folder
             File imageFile = this.createNewImagePNGFile(fileName, driveFolder.getId(), inputFile);
 
-            this.addNewWritePermissionToUser(driveFolder.getId(), "gogi.gig.99@gmail.com");
+            this.addNewWritePermissionToUser(imageFile.getId(), "gogi.gig.99@gmail.com");
 
             //writeAllFiles();
             return imageFile.getId();

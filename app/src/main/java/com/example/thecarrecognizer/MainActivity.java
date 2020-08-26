@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
         dialog.show();
-        googleDriveController.createImageFile(resultFile, "TheCarPhoto.png")
+        googleDriveController.createImageFile(resultFile, "TheCarClassifier_TheCarPhoto01.png")
                 .addOnSuccessListener(s -> {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
