@@ -33,11 +33,14 @@ import com.google.api.services.drive.DriveScopes;
 
 import java.io.*;
 import java.util.Collections;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity {
     Button selectPhotoButton;
-    Button remoteEvalButton;
+    Button evalButton;
+    Button showResultsButton;
     ImageView mainImageView;
     public static int backgroundColor = Color.WHITE;
 
@@ -62,7 +65,9 @@ public class MainActivity extends AppCompatActivity {
         Button changeThemeButton = findViewById(R.id.changeThemeButton);
         selectPhotoButton = findViewById(R.id.selectPhotoButton);
 
-        remoteEvalButton = findViewById(R.id.remoteEvalButton);
+        evalButton = findViewById(R.id.evalButton);
+        showResultsButton = findViewById(R.id.showResultsButton);
+        showResultsButton.setEnabled(false);
 
         mainImageView = findViewById(R.id.mainImageView);
 
@@ -117,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
     Bitmap currentPhotoBitmap;
     final String defaultAppDriveFolderName = "CarPhotoAndInfo_TheCarClassifierApp";
 
+    Random rand = new Random();
+    String pseudoUniqueName = String.valueOf(System.currentTimeMillis()) + rand.nextInt(100000000);
+
 
 
     public void selectPhoto(View view) {
@@ -168,8 +176,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void checkPermission(String permission, int requestCode)
-    {
+    public void checkPermission(String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission)
                 == PackageManager.PERMISSION_DENIED) {
 
@@ -191,11 +198,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case REQUEST_IMAGE_CAPTURE:
                     this.currentPhotoBitmap = ImageBuilder.decodeAndShowPhoto(this, currentPhotoPath, mainImageView);
+                    this.evalButton.setEnabled(true);
+                    this.showResultsButton.setEnabled(false);
                     break;
                 case REQUEST_CHOOSE_FROM_GALLERY:
                     Uri selectedPhotoUri = data.getData();
                     mainImageView.setImageURI(selectedPhotoUri);
                     this.currentPhotoBitmap = ((BitmapDrawable)mainImageView.getDrawable()).getBitmap();
+                    this.evalButton.setEnabled(true);
+                    this.showResultsButton.setEnabled(false);
                     break;
             }
         }
@@ -214,7 +225,8 @@ public class MainActivity extends AppCompatActivity {
                             .setApplicationName("The Car Classifier")
                             .build();
 
-                    googleDriveController = new GoogleDriveController(googleDriveService, this.defaultAppDriveFolderName);
+                    googleDriveController = new GoogleDriveController(googleDriveService,  pseudoUniqueName + '-' + this.defaultAppDriveFolderName);
+
                     createUploadPhotoWarningDialog();
                 })
                 .addOnFailureListener(e -> {
@@ -225,26 +237,62 @@ public class MainActivity extends AppCompatActivity {
 
     private void createUploadPhotoWarningDialog() {
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
-        String alertMessage = String.format("Warning! To keep your Google Drive root directory clean the application will delete all files and folders named: %s", this.defaultAppDriveFolderName);
+        String alertMessage = "The selected image will be uploaded to your Google Drive. Do you wish to continue?";
         alertDiaBuilder.setMessage(alertMessage)
-                .setPositiveButton("Proceed", (dialog, id) -> uploadImage())
-                .setNegativeButton("Cancel", (dialog, id) -> dialog.dismiss());
+                .setPositiveButton("Yes", (dialog, id) -> uploadImage())
+                .setNegativeButton("No", (dialog, id) -> dialog.dismiss());
         alertDiaBuilder.show();
     }
 
+
     public void uploadImage() {
+        // delete existing files with the same Drive ID
+        googleDriveController.safeDelete();
+
+        /*
+        try {
+            TimeUnit.SECONDS.sleep(3);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
         File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
 
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
         dialog.show();
-        googleDriveController.createImageFile(resultFile, "TheCarClassifier_TheCarPhoto01.png")
+        googleDriveController.createImageFile(this, resultFile, pseudoUniqueName, "Result.txt","CarPhoto.png")
                 .addOnSuccessListener(s -> {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
+                    this.evalButton.setEnabled(false);
+                    this.showResultsButton.setEnabled(true);
+                    // on each successful upload change the pseudoUniqueName
+                    pseudoUniqueName = String.valueOf(System.currentTimeMillis()) + rand.nextInt(100000000);
                 })
                 .addOnFailureListener(e -> {
                     dialog.dismiss();
                     Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
                 });
+    }
+
+    public void getResult(View view) {
+        boolean resultAvailable = googleDriveController.checkForResult();
+        System.out.println(resultAvailable);
+        if (!resultAvailable) {
+            Toast.makeText(getApplicationContext(), "Result file is not ready. Please wait a little bit and then try again.", Toast.LENGTH_LONG).show();
+            // this.evalButton.setEnabled(false);
+            // this.showResultsButton.setEnabled(true);
+            return;
+        }
+        googleDriveController.getAndSave(this);
+        try {
+            TimeUnit.SECONDS.sleep(4);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        googleDriveController.safeDeleteWithNull();
+        this.evalButton.setEnabled(true);
+        this.showResultsButton.setEnabled(false);
+        // GoogleDriveController.folderDriveID = null;
     }
 }

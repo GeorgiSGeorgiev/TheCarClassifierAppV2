@@ -55,8 +55,6 @@ public class ImageBuilder {
     public static File convertBitmapToFile(Context currentContext, Bitmap bitmap) {
         File resultFile = new File(currentContext.getCacheDir(), "temp.png");
 
-        System.out.println("Starting debugging");
-
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
         byte[] bitmapData = bos.toByteArray();

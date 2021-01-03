@@ -14,6 +14,17 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" android:id="@+id/backgroundImageView"
             android:contentDescription="@string/background_description"/>
+    <Button
+            android:text="@string/show_results"
+            android:layout_width="166dp"
+            android:layout_height="57dp" android:id="@+id/showResultsButton"
+            android:enabled="false"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
+            app:layout_constraintVertical_bias="0.408"
+            android:theme="@style/AppTheme.NotWhiteButton"
+            android:onClick="getResult"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.934"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,28 +33,18 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:id="@+id/infoTextView"
-            app:layout_constraintVertical_bias="0.813"
             app:layout_constraintBottom_toTopOf="@+id/mainImageView"
-            app:layout_constraintTop_toBottomOf="@+id/selectCNNbutton"/>
+            android:layout_marginBottom="12dp"/>
     <Button
             android:text="@string/theme"
-            android:layout_width="110dp"
-            android:layout_height="50dp" android:id="@+id/changeThemeButton"
+            android:layout_width="81dp"
+            android:layout_height="43dp" android:id="@+id/changeThemeButton"
             android:background="@color/PitchBlack"
             android:textColor="@color/White"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/infoTextView"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.946"
-            app:layout_constraintVertical_bias="0.039"/>
-    <Button
-            android:text="@string/select_cnn"
-            android:layout_width="117dp"
-            android:layout_height="63dp" android:id="@+id/selectCNNbutton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.059" app:layout_constraintVertical_bias="0.029"
-            android:theme="@style/AppTheme.CyberPurpleButton"
-            app:layout_constraintEnd_toStartOf="@+id/changeThemeButton"/>
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.951"
+            app:layout_constraintVertical_bias="0.119"/>
     <Button
             android:text="@string/select_car_photo"
             android:layout_width="0dp"
@@ -56,28 +57,20 @@
             android:onClick="selectPhoto"/>
     <Button
             android:text="@string/evaluate"
-            android:layout_width="170dp"
-            android:layout_height="70dp" android:id="@+id/evalButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.066" app:layout_constraintVertical_bias="0.542"
-            android:theme="@style/AppTheme.NotWhiteButton" app:layout_constraintEnd_toEndOf="parent"/>
-    <Button
-            android:text="@string/remote_eval"
-            android:layout_width="170dp"
-            android:layout_height="70dp" android:id="@+id/remoteEvalButton"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="166dp"
+            android:layout_height="57dp" android:id="@+id/evalButton"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
-            app:layout_constraintHorizontal_bias="0.709" app:layout_constraintVertical_bias="0.542"
+            app:layout_constraintVertical_bias="0.408"
             android:theme="@style/AppTheme.NotWhiteButton"
-            app:layout_constraintStart_toEndOf="@+id/evalButton"
-            android:onClick="requestSignIn"/>
+            android:onClick="requestSignIn" app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintHorizontal_bias="0.065" app:layout_constraintEnd_toEndOf="parent"/>
     <ImageView
             android:layout_width="401dp"
             android:layout_height="227dp" app:srcCompat="@drawable/porsche_911_gts" android:id="@+id/mainImageView"
             app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="@+id/backgroundImageView"
             app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.39"
+            app:layout_constraintVertical_bias="0.376"
             android:layout_centerHorizontal="true"
             android:contentDescription="@string/selected_photo_description"/>
 

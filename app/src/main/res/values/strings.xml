@@ -7,7 +7,7 @@
     <string name="select_car_photo">Select Car Photo</string>
     <string name="current_photo">Currently selected photo:</string>
     <string name="evaluate" translatable="false">Evaluate</string>
-    <string name="remote_eval">Remote Eval</string>
+    <string name="show_results">Show Results</string>
     <string name="uploading_to_Drive">Uploading to Google Drive</string>
     <string name="reformatting_photo">Reformatting photo</string>
     <string name="default_drive_file_name">CarPhotoAndInfo_TheCarClassifierApp</string>
