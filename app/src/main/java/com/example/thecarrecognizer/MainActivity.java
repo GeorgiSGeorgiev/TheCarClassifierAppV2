@@ -36,17 +36,26 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+// Created by: Georgi S. Georgiev
+
+// Note 1: this whole project will be referred as "the application"
+// Note 2: the main program which does the evaluation will be referred as "the core"
 
 public class MainActivity extends AppCompatActivity {
+    // main buttons
     Button selectPhotoButton;
     Button evalButton;
     Button showResultsButton;
+    // the image which will be displayed on the application after selection
     ImageView mainImageView;
     public static int backgroundColor = Color.WHITE;
 
+    // the main (and only) Google Drive Controller
+    // manages user authentication and creates the connection to the Drive servers
     GoogleDriveController googleDriveController;
 
-
+    // static variables representing the communication codes
+    // created for better code readability
     static final int REQUEST_GOOGLE_SIGN_IN = 0;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_CHOOSE_FROM_GALLERY = 2;
@@ -55,26 +64,36 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
 
 
-    // This method is called on application start
+    // This method is called automatically on application start.
+    // It is the best place to put initialization code.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //<editor-fold desc="Main application initializations">
 
+        // run the original on Create method from the parent class AppCompatActivity
+        // makes the default initializations that the application needs
         super.onCreate(savedInstanceState);
+        // set the main view (panel)
         setContentView(R.layout.activity_main);
 
+        // Buttons init:
         Button changeThemeButton = findViewById(R.id.changeThemeButton);
         selectPhotoButton = findViewById(R.id.selectPhotoButton);
 
         evalButton = findViewById(R.id.evalButton);
         showResultsButton = findViewById(R.id.showResultsButton);
         showResultsButton.setEnabled(false);
+        // End of buttons init.
 
+        // the view (panel) where the selected image is shown
         mainImageView = findViewById(R.id.mainImageView);
-
+        // the background
         final ImageView backgroundView = findViewById(R.id.backgroundImageView);
-
+        // set the default image to be shown on application start
         this.currentPhotoBitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.porsche_911_gts);
 
+        // initialize the onClick event of the changeThemeButton
+        // switches between dark and light mode (light mode is the default one)
         View.OnClickListener onThemeBtnClick = view -> {
             Button theB = (Button) view;
             switch (backgroundColor) {
@@ -91,18 +110,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         };
-
         changeThemeButton.setOnClickListener(onThemeBtnClick);
+        //</editor-fold>
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-
+    /**
+     * Creates the Google Drive sign in dialog.
+     * @param view The view where the dialog will be shown.
+     */
     public void requestSignIn(View view) {
         GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -122,15 +138,21 @@ public class MainActivity extends AppCompatActivity {
     Bitmap currentPhotoBitmap;
     final String defaultAppDriveFolderName = "CarPhotoAndInfo_TheCarClassifierApp";
 
+    // Used for the pseudo-unique folder name generation.
     Random rand = new Random();
+    // Warning! Contains statically limited generator. May cause a problem if the application gets bigger and well-known.
     String pseudoUniqueName = String.valueOf(System.currentTimeMillis()) + rand.nextInt(100000000);
 
 
-
+    /**
+     * Creates an image selection dialog.
+     * @param view The main view where the dialog will be created.
+     */
     public void selectPhoto(View view) {
         final String[] options = { takePhoto, chooseFromGallery, backStr };
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
         DialogInterface.OnClickListener dialogOnClickL = (dialogInterface, i) -> {
+            // different options user can choose
             switch (options[i]) {
                 case takePhoto:
                     TakePhotoIntent();
@@ -176,6 +198,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Checks for permission. If no permission was granted, then asks for it.
+     * @param permission Name of the permission (all permissions are located in Manifest.permission)
+     * @param requestCode The request code of the permission. Permission codes are defined by the programmer and
+     *                    are used for internal communication between different methods.
+     */
     public void checkPermission(String permission, int requestCode) {
         if (ContextCompat.checkSelfPermission(MainActivity.this, permission)
                 == PackageManager.PERMISSION_DENIED) {
@@ -187,7 +215,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Activity handling method
+    /**
+     * Method that handles different user requests.
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (various data can be attached to Intent "extras").
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -212,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Creates a new Drive controller and handles the Sign in event.
     private void handleSignInIntent(Intent data) {
         GoogleSignIn.getSignedInAccountFromIntent(data)
                 .addOnSuccessListener(googleSignInAccount -> {
@@ -244,7 +278,10 @@ public class MainActivity extends AppCompatActivity {
         alertDiaBuilder.show();
     }
 
-
+    /**
+     * Uploads the selected by the user image to Google Drive. If there are move files with the same ID on the cloud
+     * deletes them at the beginning.
+     */
     public void uploadImage() {
         // delete existing files with the same Drive ID
         googleDriveController.safeDelete();
@@ -256,10 +293,13 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }*/
 
+        // converts the selected image to Java file
         File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
 
+        // progress dialog
         AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
         dialog.show();
+
         googleDriveController.createImageFile(this, resultFile, pseudoUniqueName, "Result.txt","CarPhoto.png")
                 .addOnSuccessListener(s -> {
                     dialog.dismiss();
@@ -275,15 +315,19 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Gets the result data from Drive and writes them on the selected view in a special dialog.
+     * @param view The view where the dialog containing all the date will be shown.
+     */
     public void getResult(View view) {
         boolean resultAvailable = googleDriveController.checkForResult();
         System.out.println(resultAvailable);
+        // if the result is still not available, the user has to try to get the data later
         if (!resultAvailable) {
             Toast.makeText(getApplicationContext(), "Result file is not ready. Please wait a little bit and then try again.", Toast.LENGTH_LONG).show();
-            // this.evalButton.setEnabled(false);
-            // this.showResultsButton.setEnabled(true);
             return;
         }
+        // get from Drive, save on the current device and then show the result data
         googleDriveController.getAndSave(this);
         try {
             TimeUnit.SECONDS.sleep(4);
