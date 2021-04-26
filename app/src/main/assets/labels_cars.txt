@@ -1,0 +1,8 @@
+BigCoupeOrSedan
+Hatchback
+PickUp
+PonyCar
+SportsCar
+SUV
+Unknown
+Van

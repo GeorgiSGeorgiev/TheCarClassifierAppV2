@@ -12,7 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -42,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 // Note 2: the main program which does the evaluation will be referred as "the core"
 
 public class MainActivity extends AppCompatActivity {
+    String evaluationResult;
     // main buttons
     Button selectPhotoButton;
     Button evalButton;
@@ -278,6 +279,25 @@ public class MainActivity extends AppCompatActivity {
         alertDiaBuilder.show();
     }
 
+    public void createEvalPhotoConfirmDialog(View view) {
+        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
+        String alertMessage = "The selected image will evaluated. Do you wish to continue?";
+        alertDiaBuilder.setMessage(alertMessage)
+                .setPositiveButton("Yes", (dialog, id) -> handleModel())
+                .setNegativeButton("No", (dialog, id) -> dialog.dismiss());
+        alertDiaBuilder.show();
+    }
+
+    private void handleModel() {
+        MLModel model = new MLModel(MainActivity.this);
+        ModelResultPair[] results = model.evalDirectly(this.currentPhotoBitmap);
+        evaluationResult = model.convertPairArrayToString(results);
+        System.out.println(evaluationResult);
+        if (evaluationResult != null) {
+            this.showResultsButton.setEnabled(true);
+        }
+    }
+
     /**
      * Uploads the selected by the user image to Google Drive. If there are move files with the same ID on the cloud
      * deletes them at the beginning.
@@ -285,13 +305,6 @@ public class MainActivity extends AppCompatActivity {
     public void uploadImage() {
         // delete existing files with the same Drive ID
         googleDriveController.safeDelete();
-
-        /*
-        try {
-            TimeUnit.SECONDS.sleep(3);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
 
         // converts the selected image to Java file
         File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
@@ -338,5 +351,18 @@ public class MainActivity extends AppCompatActivity {
         this.evalButton.setEnabled(true);
         this.showResultsButton.setEnabled(false);
         // GoogleDriveController.folderDriveID = null;
+    }
+
+    /**
+     * Gets the result data from Drive and writes them on the selected view in a special dialog.
+     * @param view The view where the dialog containing all the date will be shown.
+     */
+    public void getDirectResult(View view) {
+        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
+        alertDiaBuilder.setMessage(evaluationResult) // write the result data on the dialog panel
+                .setPositiveButton("OK", (dialog, id) -> dialog.dismiss()); // define 'OK' button
+        // show the dialog until the 'OK' button is clicked
+        alertDiaBuilder.show();
+        this.evalButton.setEnabled(true);
     }
 }

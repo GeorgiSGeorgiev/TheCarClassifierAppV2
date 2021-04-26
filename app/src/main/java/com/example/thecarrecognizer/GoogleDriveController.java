@@ -382,9 +382,7 @@ public class GoogleDriveController {
                     System.out.printf("Found file: %s (%s)\n",
                             file.getName(), file.getId());
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (NullPointerException e) {
+            } catch (IOException | NullPointerException e) {
                 e.printStackTrace();
             }
             // go to the next page

@@ -6,14 +6,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
+
     <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" android:id="@+id/backgroundImageView"
-            android:contentDescription="@string/background_description"/>
+        android:id="@+id/backgroundImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/background_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <Button
             android:text="@string/show_results"
             android:layout_width="166dp"
@@ -23,7 +28,7 @@
             app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
             app:layout_constraintVertical_bias="0.408"
             android:theme="@style/AppTheme.NotWhiteButton"
-            android:onClick="getResult"
+            android:onClick="getDirectResult"
             app:layout_constraintStart_toStartOf="parent" app:layout_constraintHorizontal_bias="0.934"/>
     <TextView
             android:layout_width="wrap_content"
@@ -63,7 +68,7 @@
             app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
             app:layout_constraintVertical_bias="0.408"
             android:theme="@style/AppTheme.NotWhiteButton"
-            android:onClick="requestSignIn" app:layout_constraintStart_toStartOf="parent"
+            android:onClick="createEvalPhotoConfirmDialog" app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.065" app:layout_constraintEnd_toEndOf="parent"/>
     <ImageView
             android:layout_width="401dp"

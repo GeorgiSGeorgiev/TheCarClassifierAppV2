@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.example.thecarrecognizer"
-        minSdkVersion 16
+        minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
         versionCode 1
@@ -29,6 +29,15 @@ android {
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
     }
+
+    buildFeatures {
+        mlModelBinding true
+    }
+
+    // Specify tflite file should not be compressed for the app apk
+    aaptOptions {
+        noCompress "tflite"
+    }
 }
 
 configurations {
@@ -41,12 +50,15 @@ configurations {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-metadata:0.1.0-rc1'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.android.gms:play-services-auth:18.1.0' // that's the new way of signing in to the Google services
+    implementation 'com.google.android.gms:play-services-auth:19.0.0' // that's the new way of signing in to the Google services
     //implementation 'com.google.api-client:google-api-client:1.23.0'
     implementation ('com.google.api-client:google-api-client-android:1.26.0') {
         exclude group: 'org.apache.httpcomponents'
@@ -56,4 +68,9 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+
+    // Import tflite dependencies
+    implementation 'org.tensorflow:tensorflow-lite:2.4.0'
+    implementation 'org.tensorflow:tensorflow-lite-support:0.1.0'
+    implementation 'org.tensorflow:tensorflow-lite-task-vision:0.1.0'
 }
