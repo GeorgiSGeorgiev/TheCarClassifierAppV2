@@ -13,4 +13,5 @@
     <color name="NotWhite">#DBE2E2</color>
     <color name="Grey">#777777</color>
     <color name="LightGrey">#ededed</color>
+    <color name="LightBlack">#2a2a2a</color>
 </resources>
