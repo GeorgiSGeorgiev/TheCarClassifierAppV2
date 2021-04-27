@@ -97,17 +97,18 @@ public class MainActivity extends AppCompatActivity {
             Button themeButton = (Button) view;
             switch (backgroundColor) {
                 case Color.WHITE:
-                    ViewExtensions.ChangeButtonColor(themeButton, Color.WHITE,
-                            getColor(R.color.CyberBlack));
-                    ViewExtensions.ChangeButtonColor(changeModButton, getColor(R.color.CyberBlack),
-                            Color.WHITE);
+                    ViewExtensions.ChangeButtonColor(themeButton, getColor(R.color.LightGrey),
+                            Color.BLACK);
+                    ViewExtensions.ChangeButtonColor(changeModButton, Color.BLACK,
+                            getColor(R.color.LightGrey));
                     backgroundColor = Color.BLACK;
                     backgroundView.setBackgroundColor(getColor(R.color.CyberBlack));
                     break;
                 case Color.BLACK:
-                    ViewExtensions.ChangeButtonColor(themeButton, Color.BLACK, Color.WHITE);
-                    ViewExtensions.ChangeButtonColor(changeModButton, Color.WHITE,
-                            getColor(R.color.CyberBlack));
+                    ViewExtensions.ChangeButtonColor(themeButton, Color.BLACK,
+                            getColor(R.color.LightGrey));
+                    ViewExtensions.ChangeButtonColor(changeModButton, getColor(R.color.LightGrey),
+                            Color.BLACK);
                     backgroundColor = Color.WHITE;
                     backgroundView.setBackgroundColor(Color.WHITE);
                     break;
