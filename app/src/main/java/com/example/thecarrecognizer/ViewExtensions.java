@@ -1,7 +1,5 @@
 package com.example.thecarrecognizer;
 
-import android.graphics.Color;
-import android.view.View;
 import android.widget.Button;
 
 /**

@@ -8,8 +8,8 @@ android {
         minSdkVersion 24
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,12 +40,14 @@ android {
     }
 }
 
+/*
 configurations {
     all {
         exclude module: 'httpclient'
         exclude module: 'commons-logging'
     }
 }
+ */
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -58,16 +60,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.google.android.gms:play-services-auth:19.0.0' // that's the new way of signing in to the Google services
-    //implementation 'com.google.api-client:google-api-client:1.23.0'
-    implementation ('com.google.api-client:google-api-client-android:1.26.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
-    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    implementation ('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
+    // The Annotation class is in the following package:
     implementation 'com.google.http-client:google-http-client-gson:1.26.0'
+
+    // Flask communication
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 
     // Import tflite dependencies
     implementation 'org.tensorflow:tensorflow-lite:2.4.0'

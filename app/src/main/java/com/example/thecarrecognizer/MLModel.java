@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.Pair;
 
-import com.example.thecarrecognizer.ml.MobilenetV110224;
 import com.example.thecarrecognizer.ml.Model;
+import com.example.thecarrecognizer.ml.EfficientnetB0;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.common.FileUtil;
@@ -70,21 +70,17 @@ public class MLModel {
         loadLabels();
         ModelResultPair[] resultArray = new ModelResultPair[5];
         try {
-            // MobilenetV210224 model = MobilenetV210224.newInstance(MainActivity.this);
-            // MobilenetV110224 model = MobilenetV110224.newInstance(mainContext);
-
-            Model model = Model.newInstance(mainContext);
+            //Model model = Model.newInstance(mainContext);
+            EfficientnetB0 model = EfficientnetB0.newInstance(mainContext);
             // Creates inputs for reference.
             TensorBuffer inputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
             inputTensor.loadBuffer(processedImage.getBuffer());
 
             // Runs model inference and gets result.
-            //MobilenetV210224.Outputs outputs = model.process(inputTensor);
-            //MobilenetV110224.Outputs outputs = model.process(inputTensor);
-            Model.Outputs outputs = model.process(inputTensor);
+            //Model.Outputs outputs = model.process(inputTensor);
+            EfficientnetB0.Outputs outputs = model.process(inputTensor);
             TensorBuffer resultTensor = outputs.getOutputFeature0AsTensorBuffer();
             System.out.println(loadedLabels);
-            // float[] res = resultTensor.getFloatArray();
 
             if (loadedLabels != null) {
                 // Map of labels and their corresponding probability

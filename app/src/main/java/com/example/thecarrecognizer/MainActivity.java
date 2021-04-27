@@ -15,26 +15,12 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.DriveScopes;
-
 import java.io.*;
-import java.util.Collections;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 // Created by: Georgi S. Georgiev
 
@@ -50,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     // the image which will be displayed on the application after selection
     ImageView mainImageView;
     public static int backgroundColor = Color.WHITE;
-
-    // the main (and only) Google Drive Controller
-    // manages user authentication and creates the connection to the Drive servers
-    GoogleDriveController googleDriveController;
 
     // static variables representing the communication codes
     // created for better code readability
@@ -115,34 +97,12 @@ public class MainActivity extends AppCompatActivity {
         //</editor-fold>
     }
 
-
-    /**
-     * Creates the Google Drive sign in dialog.
-     * @param view The view where the dialog will be shown.
-     */
-    public void requestSignIn(View view) {
-        GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
-                .build();
-
-        GoogleSignInClient googleClient = GoogleSignIn.getClient(this, signInOptions);
-        startActivityForResult(googleClient.getSignInIntent(), REQUEST_GOOGLE_SIGN_IN);
-    }
-
-
     private static final String takePhoto = "Take Photo";
     private static final String chooseFromGallery = "Choose from Gallery";
     private static final String backStr = "Back";
 
     String currentPhotoPath = "";
     Bitmap currentPhotoBitmap;
-    final String defaultAppDriveFolderName = "CarPhotoAndInfo_TheCarClassifierApp";
-
-    // Used for the pseudo-unique folder name generation.
-    Random rand = new Random();
-    // Warning! Contains statically limited generator. May cause a problem if the application gets bigger and well-known.
-    String pseudoUniqueName = String.valueOf(System.currentTimeMillis()) + rand.nextInt(100000000);
 
 
     /**
@@ -228,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_GOOGLE_SIGN_IN:
-                    handleSignInIntent(data);
+                    // handleSignInIntent(data);
                     break;
                 case REQUEST_IMAGE_CAPTURE:
                     this.currentPhotoBitmap = ImageBuilder.decodeAndShowPhoto(this, currentPhotoPath, mainImageView);
@@ -244,39 +204,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }
-    }
-
-    // Creates a new Drive controller and handles the Sign in event.
-    private void handleSignInIntent(Intent data) {
-        GoogleSignIn.getSignedInAccountFromIntent(data)
-                .addOnSuccessListener(googleSignInAccount -> {
-                    // on success we already have the user credentials and we have to do the sign in operation
-                    GoogleAccountCredential credential = GoogleAccountCredential
-                            .usingOAuth2(MainActivity.this, Collections.singleton(DriveScopes.DRIVE_FILE));
-                    credential.setSelectedAccount(googleSignInAccount.getAccount());
-
-                    Drive googleDriveService = new Drive
-                            .Builder(AndroidHttp.newCompatibleTransport(), new GsonFactory(), credential)
-                            .setApplicationName("The Car Classifier")
-                            .build();
-
-                    googleDriveController = new GoogleDriveController(googleDriveService,  pseudoUniqueName + '-' + this.defaultAppDriveFolderName);
-
-                    createUploadPhotoWarningDialog();
-                })
-                .addOnFailureListener(e -> {
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
-                });
-    }
-
-    private void createUploadPhotoWarningDialog() {
-        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
-        String alertMessage = "The selected image will be uploaded to your Google Drive. Do you wish to continue?";
-        alertDiaBuilder.setMessage(alertMessage)
-                .setPositiveButton("Yes", (dialog, id) -> uploadImage())
-                .setNegativeButton("No", (dialog, id) -> dialog.dismiss());
-        alertDiaBuilder.show();
     }
 
     public void createEvalPhotoConfirmDialog(View view) {
@@ -296,61 +223,6 @@ public class MainActivity extends AppCompatActivity {
         if (evaluationResult != null) {
             this.showResultsButton.setEnabled(true);
         }
-    }
-
-    /**
-     * Uploads the selected by the user image to Google Drive. If there are move files with the same ID on the cloud
-     * deletes them at the beginning.
-     */
-    public void uploadImage() {
-        // delete existing files with the same Drive ID
-        googleDriveController.safeDelete();
-
-        // converts the selected image to Java file
-        File resultFile = ImageBuilder.convertBitmapToFile(this, this.currentPhotoBitmap);
-
-        // progress dialog
-        AlertDialog dialog = ProgressDialogBuilder.CreateAlertDialog(this, R.layout.progress_bar_dialog_layout);
-        dialog.show();
-
-        googleDriveController.createImageFile(this, resultFile, pseudoUniqueName, "Result.txt","CarPhoto.png")
-                .addOnSuccessListener(s -> {
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Upload was successful", Toast.LENGTH_LONG).show();
-                    this.evalButton.setEnabled(false);
-                    this.showResultsButton.setEnabled(true);
-                    // on each successful upload change the pseudoUniqueName
-                    pseudoUniqueName = String.valueOf(System.currentTimeMillis()) + rand.nextInt(100000000);
-                })
-                .addOnFailureListener(e -> {
-                    dialog.dismiss();
-                    Toast.makeText(getApplicationContext(), "Check your Google Drive API key", Toast.LENGTH_LONG).show();
-                });
-    }
-
-    /**
-     * Gets the result data from Drive and writes them on the selected view in a special dialog.
-     * @param view The view where the dialog containing all the date will be shown.
-     */
-    public void getResult(View view) {
-        boolean resultAvailable = googleDriveController.checkForResult();
-        System.out.println(resultAvailable);
-        // if the result is still not available, the user has to try to get the data later
-        if (!resultAvailable) {
-            Toast.makeText(getApplicationContext(), "Result file is not ready. Please wait a little bit and then try again.", Toast.LENGTH_LONG).show();
-            return;
-        }
-        // get from Drive, save on the current device and then show the result data
-        googleDriveController.getAndSave(this);
-        try {
-            TimeUnit.SECONDS.sleep(4);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        googleDriveController.safeDeleteWithNull();
-        this.evalButton.setEnabled(true);
-        this.showResultsButton.setEnabled(false);
-        // GoogleDriveController.folderDriveID = null;
     }
 
     /**

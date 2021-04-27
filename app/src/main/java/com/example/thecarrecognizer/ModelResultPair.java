@@ -11,17 +11,6 @@ public class ModelResultPair {
     private String label;
     private Float probability;
 
-    public ModelResultPair(String label, Float probability) {
-        super();
-        this.label = label;
-        this.probability = probability;
-    }
-
-    public ModelResultPair(Pair<String, Float> otherPair) {
-        super();
-        setTheWholePair(otherPair);
-    }
-
     public ModelResultPair(Map.Entry<String, Float> otherEntry) {
         super();
         setTheWholePair(otherEntry);
