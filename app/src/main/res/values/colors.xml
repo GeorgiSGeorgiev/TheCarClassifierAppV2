@@ -9,6 +9,7 @@
     <color name="DarkCyberGrapePurple">#58427c</color>
     <color name="LightCyberBlue">#00dfff</color>
     <color name="CyberBlack">#242424</color>
+    <color name="CyberGrey">#bbbbbb</color>
     <color name="NotWhite">#DBE2E2</color>
     <color name="Grey">#777777</color>
 </resources>
