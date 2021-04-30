@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="mods_themes_category"
+        app:title="Mods and Themes">
+
+        <ListPreference
+            app:key="theme"
+            app:title="Select theme"
+            app:entries="@array/themes"
+            app:entryValues="@array/theme_values"
+            app:defaultValue="@string/theme_default_value"/>
+
+        <ListPreference
+            app:key="mode"
+            app:title="Select evaluation mode"
+            app:entries="@array/modes"
+            app:entryValues="@array/mode_values"
+            app:defaultValue="@string/mode_default_value"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
+        app:key="connection_category"
+        app:title="Connection with the server">
+        <EditTextPreference
+            app:key="server_IP"
+            app:title="Server IP address"
+            app:defaultValue="@string/default_ip"/>
+        <EditTextPreference
+            app:key="server_port"
+            app:title="Server port"
+            app:defaultValue="@integer/port_default_value"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

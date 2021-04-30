@@ -2,27 +2,34 @@ package com.example.thecarrecognizer;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.*;
+
+import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 // Created by: Georgi S. Georgiev
 
@@ -36,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
     Button evalButton;
     Button showResultsButton;
     Button changeModButton;
+
+    ConstraintLayout mainLayout;
     // The image which will be displayed on the application after selection
     ImageView mainImageView;
-    public static int backgroundColor = Color.WHITE;
     // Mod controls
     int selectedMod = 1;
     String[] mods = { "Send To Server", "Direct Evaluation"};
@@ -71,8 +79,10 @@ public class MainActivity extends AppCompatActivity {
         // set the main view (panel)
         setContentView(R.layout.activity_main);
 
+        mainLayout = (ConstraintLayout) findViewById(R.id.mainLayout);
+        // mainLayout.setBackgroundColor(getColor(R.color.CyberGrey));
+
         // Buttons init:
-        Button changeThemeButton = findViewById(R.id.changeThemeButton);
         selectPhotoButton = findViewById(R.id.selectPhotoButton);
 
         evalButton = findViewById(R.id.evalButton);
@@ -85,38 +95,23 @@ public class MainActivity extends AppCompatActivity {
 
         // the view (panel) where the selected image is shown
         mainImageView = findViewById(R.id.mainImageView);
-        // the background
-        final ImageView backgroundView = findViewById(R.id.backgroundImageView);
         // set the default image to be shown on application start
         this.currentPhotoBitmap = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.porsche_911_gts);
 
-        // initialize the onClick event of the changeThemeButton
-        // switches between dark and light mode (light mode is the default one)
-        View.OnClickListener onThemeBtnClick = view -> {
-            Button themeButton = (Button) view;
-            switch (backgroundColor) {
-                case Color.WHITE:
-                    ViewExtensions.ChangeButtonColor(themeButton, getColor(R.color.LightGrey),
-                            Color.BLACK);
-                    ViewExtensions.ChangeButtonColor(changeModButton, getColor(R.color.LightBlack),
-                            Color.WHITE);
-                    backgroundColor = Color.BLACK;
-                    backgroundView.setBackgroundColor(getColor(R.color.CyberBlack));
-                    break;
-                case Color.BLACK:
-                    ViewExtensions.ChangeButtonColor(themeButton, getColor(R.color.LightBlack),
-                            Color.WHITE);
-                    ViewExtensions.ChangeButtonColor(changeModButton, getColor(R.color.LightGrey),
-                            Color.BLACK);
-                    backgroundColor = Color.WHITE;
-                    backgroundView.setBackgroundColor(Color.WHITE);
-                    break;
-            }
-        };
-        changeThemeButton.setOnClickListener(onThemeBtnClick);
+        // get saved cached data and restore the settings to the last available state
+        SharedPreferences sharedPref = getDefaultSharedPreferences(this);
+        String theme = sharedPref.getString("theme", ""); // restore the theme
+        ThemeController.setChosenTheme(theme);
+        // TODO: add the main activity theme change
+        // TODO: discover how to change the dialog color
+        // TODO: recover the remaining settings (IP and PORT right before their first usage,
+        //  MODE right here right now)
+        // TODO: remove the deprecated stuff from this class and delete the unused XMLs
         //</editor-fold>
     }
+
+
 
     /**
      * Changes the selected mod. Updates the button text as well.
@@ -267,7 +262,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleServerCommunication() {
         OkHTTP3Controller okHTTP3Controller = new OkHTTP3Controller(MainActivity.this,
-                "192.168.11.144", 5000);
+                getResources().getString(R.string.default_ip),
+                getResources().getInteger(R.integer.port_default_value));
         // If the controller IP address is private that means the server and the mobile device must
         // both be connected to it. Otherwise the data transfer won't work.
         // Port 5000 is a TCP/UDP port and is widely used.
@@ -296,4 +292,23 @@ public class MainActivity extends AppCompatActivity {
                     .show(); // show the dialog until the 'OK' button is clicked
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.settings_menu_item, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.settings) {
+            Intent intent = new Intent(MainActivity.this, MainSettingsActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
+

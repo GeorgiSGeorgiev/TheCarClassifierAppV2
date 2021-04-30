@@ -3,21 +3,11 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/White"
         tools:context=".MainActivity">
-
-    <ImageView
-        android:id="@+id/backgroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/background_description"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/infoTextView"
@@ -28,21 +18,9 @@
         android:textColor="@color/Grey"
         app:layout_constraintBottom_toTopOf="@+id/mainImageView"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
-
-    <Button
-        android:id="@+id/changeThemeButton"
-        android:layout_width="90dp"
-        android:layout_height="43dp"
-        android:background="@color/LightBlack"
-        android:text="@string/theme"
-        android:textColor="@color/White"
-        app:layout_constraintBottom_toBottomOf="@+id/infoTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.119" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/changeModeButton"
@@ -83,37 +61,38 @@
         android:theme="@style/AppTheme.NotWhiteButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.065"
+        app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
-        app:layout_constraintVertical_bias="0.408" />
+        app:layout_constraintVertical_bias="0.351" />
 
     <Button
         android:id="@+id/showResultsButton"
         android:layout_width="154dp"
         android:layout_height="57dp"
+        android:enabled="false"
         android:onClick="getDirectResult"
         android:text="@string/show_results"
-        android:enabled="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
-        app:layout_constraintVertical_bias="0.408"
         android:theme="@style/AppTheme.NotWhiteButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_bias="0.934"/>
+        app:layout_constraintTop_toBottomOf="@+id/selectPhotoButton"
+        app:layout_constraintVertical_bias="0.351" />
 
     <ImageView
-        android:layout_width="401dp"
-        android:layout_height="240dp"
-        app:srcCompat="@drawable/porsche_911_gts"
         android:id="@+id/mainImageView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/backgroundImageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.376"
+        android:layout_width="411dp"
+        android:layout_height="267dp"
         android:layout_centerHorizontal="true"
-        android:contentDescription="@string/selected_photo_description"/>
+        android:contentDescription="@string/selected_photo_description"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333"
+        app:srcCompat="@drawable/porsche_911_gts" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
