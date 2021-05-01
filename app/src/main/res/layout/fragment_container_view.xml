@@ -9,4 +9,5 @@
     tools:context=".MainSettingsActivity"
     android:background="@color/White">
 
+
 </androidx.fragment.app.FragmentContainerView>

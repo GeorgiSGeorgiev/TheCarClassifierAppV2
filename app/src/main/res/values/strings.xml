@@ -14,9 +14,10 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="default_ip">"192.168.11.144"</string>
+    <string name="default_port">"5000"</string>
 
-    <string name="mode_default_value">Direct Evaluation</string>
-    <string name="theme_default_value">Light</string>
+    <string name="default_mode">Direct Evaluation</string>
+    <string name="default_theme">Light</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

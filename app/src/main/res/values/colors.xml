@@ -4,16 +4,13 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#919191</color>
 
-    <color name="PitchBlack">#000000</color>
     <color name="White">#FFFFFF</color>
     <color name="LightCyberBlue">#00dfff</color>
     <color name="DarkerCyberBlue">#0092d1</color>
     <color name="CyberBlack">#242424</color>
     <color name="Carbon">#3E3E40</color>
-    <color name="CyberGrey">#bbbbbb</color>
+    <color name="CyberGray">#6c6b7a</color>
     <color name="NotWhite">#DBE2E2</color>
     <color name="Grey">#919191</color>
-    <color name="LightGrey">#ededed</color>
     <color name="ShadyBlue">#638aff</color>
-    <color name="GreyBlue">#8ca5c2</color>
 </resources>

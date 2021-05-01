@@ -3,9 +3,7 @@ package com.example.thecarrecognizer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.util.Pair;
 
-import com.example.thecarrecognizer.ml.Model;
 import com.example.thecarrecognizer.ml.EfficientnetB0;
 
 import org.tensorflow.lite.DataType;
@@ -18,7 +16,6 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,10 +24,6 @@ public class MLModel {
     private TensorImage processedImage;
     final String ASSOCIATED_AXIS_LABELS = "labels_cars.txt";
     private List<String> loadedLabels = null;
-
-    public String getModelTypeName() {
-        return "MobileNetV2";
-    }
 
     public MLModel(Context appContext) {
         mainContext = appContext;
@@ -102,13 +95,6 @@ public class MLModel {
             Log.e("tfliteModel", "Error: The model loading failed. File could not be opened.", e);
         }
         return resultArray;
-    }
-
-    public <T, V extends Comparable<V>> Pair<T, V> getMax(Map<T, V> map) {
-        // 'max' gets the whole value set and a lambda comparator, returns the max-value entry.
-        Map.Entry<T, V> max = Collections.max(map.entrySet(), (Map.Entry<T, V> el1, Map.Entry<T, V> el2) ->
-                el1.getValue().compareTo(el2.getValue()));
-        return new Pair<>(max.getKey(), max.getValue());
     }
 
     public String convertPairArrayToString(ModelResultPair[] resultPairs) {

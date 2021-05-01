@@ -23,7 +23,8 @@ public class ImageBuilder {
      * @throws IOException The file creation may fail.
      */
     public static File createEmptyPhotoFile(Context currentContext) throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                .format(new Date());
         String photoFileName = "JPEG_" + timeStamp + "_";
         File storageDir = currentContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         return File.createTempFile(
@@ -35,12 +36,11 @@ public class ImageBuilder {
 
     /**
      * Gets the image bitmap from the selected path and resizes its bitmap so it can fit in the selected ImageView.
-     * @param currentContext The main application environment.
      * @param path The path of the image from which the bitmap will be taken.
      * @param imageView The target ImageView component. Needed just to resize the bitmap.
      * @return The extracted bitmap.
      */
-    public static Bitmap decodePhoto(Context currentContext, String path, ImageView imageView) {
+    public static Bitmap decodePhoto(String path, ImageView imageView) {
         if (path == null || path.equals("")) {
             throw new IllegalArgumentException("Path is empty.");
         }
@@ -65,42 +65,13 @@ public class ImageBuilder {
 
     /**
      * Gets the image bitmap from the selected path and shows it on the selected ImageView.
-     * @param currentContext The main application environment.
      * @param path The path of the image from which the bitmap will be taken.
      * @param imageView The target ImageView component where the image will be shown.
      * @return The result image bitmap
      */
-    public static Bitmap decodeAndShowPhoto(Context currentContext, String path, ImageView imageView) {
-        Bitmap resultBitmap = ImageBuilder.decodePhoto(currentContext, path, imageView);
+    public static Bitmap decodeAndShowPhoto(String path, ImageView imageView) {
+        Bitmap resultBitmap = ImageBuilder.decodePhoto(path, imageView);
         imageView.setImageBitmap(resultBitmap);
         return resultBitmap;
-    }
-
-    /**
-     * Converts a bitmap to a Java file.
-     * @param currentContext The main application environment.
-     * @param bitmap The bitmap to be converted.
-     * @return The result file.
-     */
-    public static File convertBitmapToFile(Context currentContext, Bitmap bitmap) {
-        File resultFile = new File(currentContext.getCacheDir(), "temp.png");
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-        byte[] bitmapData = bos.toByteArray();
-
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(resultFile);
-            fos.write(bitmapData);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return resultFile;
     }
 }
