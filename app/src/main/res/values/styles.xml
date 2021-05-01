@@ -4,36 +4,23 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textSize">15sp</item>
-        <item name="android:keyTextSize">14sp</item>
-        <item name="android:autoSizeMinTextSize">14sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:keyTextSize">15sp</item>
         <item name="android:textColorPrimary">@color/ShadyBlue</item>
         <item name="android:textColorSecondary">@color/DarkerCyberBlue</item>
         <item name="android:textColorTertiary">@color/DarkerCyberBlue</item>
-        <item name="android:textColorPrimaryInverse">@color/CyberGrey</item>
-        <item name="android:textColorSecondaryInverse">@color/CyberGrey</item>
-        <item name="android:textColorTertiaryInverse">@color/CyberGrey</item>
-        <item name="android:textColorHint">@android:color/holo_blue_dark</item>
     </style>
 
     <style name="DarkDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/CyberBlack</item>
-        <item name="android:autoSizeMinTextSize">14sp</item>
+        <item name="colorAccent">@color/LightCyberBlue</item>
         <item name="android:textColorPrimary">@color/White</item>
         <item name="android:textColorSecondary">@color/White</item>
-
     </style>
 
     <style name="LightDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/White</item>
-        <item name="android:autoSizeMinTextSize">14sp</item>
-        <item name="android:textColorPrimary">@color/CyberBlack</item>
-        <item name="android:textColorSecondary">@color/CyberBlack</item>
-    </style>
-
-    <style name="AlternativeDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/GreyBlue</item>
-        <item name="android:autoSizeMinTextSize">14sp</item>
+        <item name="colorAccent">@color/Carbon</item>
         <item name="android:textColorPrimary">@color/CyberBlack</item>
         <item name="android:textColorSecondary">@color/CyberBlack</item>
     </style>

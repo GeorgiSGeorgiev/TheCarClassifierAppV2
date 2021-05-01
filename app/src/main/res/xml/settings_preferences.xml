@@ -11,14 +11,14 @@
             app:title="Select theme"
             app:entries="@array/themes"
             app:entryValues="@array/theme_values"
-            app:defaultValue="@string/theme_default_value"/>
+            app:defaultValue="@string/default_theme"/>
 
         <ListPreference
             app:key="mode"
             app:title="Select evaluation mode"
             app:entries="@array/modes"
             app:entryValues="@array/mode_values"
-            app:defaultValue="@string/mode_default_value"/>
+            app:defaultValue="@string/default_mode"/>
 
     </PreferenceCategory>
 
@@ -33,7 +33,7 @@
         <EditTextPreference
             app:key="server_port"
             app:title="Server port"
-            app:defaultValue="@integer/port_default_value"/>
+            app:defaultValue="@string/default_port"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

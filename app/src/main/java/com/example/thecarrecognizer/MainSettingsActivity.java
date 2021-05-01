@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
-public final class MainSettingsActivity extends AppCompatActivity {
+public class MainSettingsActivity extends AppCompatActivity {
     // there is always just one active activity so this is safe even for multiple settings activities
     static FragmentContainerView mainView;
 

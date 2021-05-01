@@ -1,13 +1,10 @@
 package com.example.thecarrecognizer;
 
-import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;

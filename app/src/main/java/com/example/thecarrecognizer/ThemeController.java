@@ -1,11 +1,10 @@
 package com.example.thecarrecognizer;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.widget.Button;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentContainerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 public class ThemeController {
     public static final int LIGHT = 0;
@@ -22,5 +21,26 @@ public class ThemeController {
                 chosenTheme = DARK;
                 break;
         }
+    }
+
+    public static ArrayAdapter<String> getCustomColoredListItemsAdapter(
+            Context context, String[] options, int textColor) {
+        return new ArrayAdapter<String>
+                (context, android.R.layout.simple_list_item_1, options){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent){
+                // Get the Item from ListView
+                View parentView = super.getView(position, convertView, parent);
+
+                // Initialize a TextView for each item of the list.
+                TextView textView = parentView.findViewById(android.R.id.text1);
+
+                // Set the text color of the list items.
+                textView.setTextColor(textColor);
+
+                // Return the modified parent view.
+                return parentView;
+            }
+        };
     }
 }
