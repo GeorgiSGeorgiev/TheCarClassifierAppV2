@@ -1,10 +1,13 @@
 package com.example.thecarrecognizer;
 
+import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -14,6 +17,7 @@ import androidx.preference.PreferenceFragmentCompat;
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        // show the settings preferences
         setPreferencesFromResource(R.xml.settings_preferences, rootKey);
 
         ListPreference themePreference = findPreference("theme");
@@ -64,24 +68,38 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     // listener that searches for value changes of concrete application setting
-    // TODO: call static methods which change the theme of the whole app from here?
     SharedPreferences.OnSharedPreferenceChangeListener listener =
             (sharedPreferences, key) -> {
-                if (key.equals("theme")) {
-                    String result = sharedPreferences.getString(key, "");
-                    if (result.equals("Light")) {
-                        ThemeController.chosenTheme = ThemeController.LIGHT;
-                        MainSettingsActivity.SetViewColor(
-                                ResourcesCompat.getColor(getResources(),
-                                        R.color.White, null));
-                    }
-                    else {
-                        ThemeController.chosenTheme = ThemeController.DARK;
-                        MainSettingsActivity.SetViewColor(
-                                ResourcesCompat.getColor(getResources(),
-                                        R.color.CyberBlack, null));
-                    }
+                switch (key) {
+                    case "theme":
+                        String result = sharedPreferences.getString(key, "");
+                        if (result.equals("Light")) {
+                            ThemeController.chosenTheme = ThemeController.LIGHT;
+                            MainSettingsActivity.setBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(),
+                                            R.color.White, null));
+                            MainActivity.setBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(),
+                                            R.color.White, null));
+                        } else {
+                            ThemeController.chosenTheme = ThemeController.DARK;
+                            MainSettingsActivity.setBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(),
+                                            R.color.CyberBlack, null));
+                            MainActivity.setBackgroundColor(
+                                    ResourcesCompat.getColor(getResources(),
+                                            R.color.CyberBlack, null));
+                        }
+                        break;
+                    case "server_IP":
+                        MainActivity.serverIP = sharedPreferences.getString(key, "");
+                        break;
+                    case "server_port":
+                        MainActivity.portNumber =
+                                Integer.parseInt(sharedPreferences.getString(key, ""));
+                        break;
                 }
+
             };
 
     @Override

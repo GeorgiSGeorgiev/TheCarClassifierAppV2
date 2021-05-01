@@ -3,10 +3,9 @@ package com.example.thecarrecognizer;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentContainerView;
 
-public class MainSettingsActivity extends AppCompatActivity {
+public final class MainSettingsActivity extends AppCompatActivity {
     // there is always just one active activity so this is safe even for multiple settings activities
     static FragmentContainerView mainView;
 
@@ -17,12 +16,9 @@ public class MainSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainView = (FragmentContainerView) findViewById(R.id.fragmentContainerView);
-        if (ThemeController.chosenTheme == ThemeController.LIGHT) {
-            SetViewColor(ResourcesCompat.getColor(getResources(), R.color.White, null));
-        } else if (ThemeController.chosenTheme == ThemeController.DARK) {
-            SetViewColor(ResourcesCompat.getColor(getResources(), R.color.CyberBlack, null));
-        }
+        mainView = findViewById(R.id.fragmentContainerView);
+        this.updateBackground();
+
         if (savedInstanceState == null) {
             // Contains two different methods of creating a new fragment that contains the
             // settings menu buttons and options. You can choose either of them according to your
@@ -40,7 +36,16 @@ public class MainSettingsActivity extends AppCompatActivity {
         }
         // this.getView().setBackgroundColor(Color.WHITE);
     }
-     public static void SetViewColor(int color) {
+
+     public static void setBackgroundColor(int color) {
         mainView.setBackgroundColor(color);
      }
+
+    private void updateBackground() {
+        if (ThemeController.chosenTheme == ThemeController.LIGHT) {
+            setBackgroundColor(getColor(R.color.White));
+        } else if (ThemeController.chosenTheme == ThemeController.DARK) {
+            setBackgroundColor(getColor(R.color.CyberBlack));
+        }
+    }
 }

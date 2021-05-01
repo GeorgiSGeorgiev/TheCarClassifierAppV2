@@ -29,7 +29,7 @@ public class ModelResultPair {
             ModelResultPair otherPair = (ModelResultPair) other;
             // standard label comparison
             compRes = (this.label.equals(otherPair.label));
-            if (!compRes) return compRes;
+            if (!compRes) return false;
             // standard probability comparison
             compRes = (this.probability.equals(otherPair.probability));
         }
