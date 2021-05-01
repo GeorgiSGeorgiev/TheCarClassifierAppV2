@@ -1,0 +1,44 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:aapt="http://schemas.android.com/aapt"
+        android:width="108dp"
+        android:height="108dp"
+        android:viewportWidth="108"
+        android:viewportHeight="108">
+    <path
+            android:pathData="M31,63.928c0,0 6.4,-11 12.1,-13.1c7.2,-2.6 26,-1.4 26,-1.4l38.1,38.1L107,108.928l-32,-1L31,63.928z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                    android:startY="49.59793"
+                    android:startX="42.9492"
+                    android:endY="92.4963"
+                    android:endX="85.84757"
+                    android:type="linear">
+                <item
+                        android:color="#44000000"
+                        android:offset="0.0"/>
+                <item
+                        android:color="#00000000"
+                        android:offset="1.0"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+            android:pathData="M28,60 L26.5,53 L48.5,45.5 L80,51 L79,60 L30,60 z"
+            android:fillColor="@color/NotWhite"
+            android:fillType="nonZero"
+            android:strokeWidth="0.42"
+            android:strokeColor="@color/CyberBlack"/>
+
+    <group android:name="wheels">
+        <path
+            android:name="circle1"
+            android:fillColor="@color/colorPrimaryDark"
+            android:pathData="M30,62 A6,6 0 1,1 42,62
+                                     A6,6 0 1,1 30,62 Z" />
+        <path
+            android:name="circle2"
+            android:fillColor="@color/colorPrimaryDark"
+            android:pathData="M65,62 A6,6 0 1,1 77,62
+                                     A6,6 0 1,1 65,62 Z" />
+    </group>
+</vector>
