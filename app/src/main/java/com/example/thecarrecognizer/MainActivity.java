@@ -38,7 +38,7 @@ import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 // Note 1: this whole project will be referred as "the application"
 // Note 2: the main program which does the evaluation will be referred as "the core"
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PhotoUtilityActivityInterface {
     String evaluationResult;
     SharedPreferences sharedAppPref; // the shared settings of the application
 
@@ -132,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
         //</editor-fold>
     }
 
@@ -190,18 +189,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Main entry point
-    private void handleTakePhotoIntent() {
+    public void handleTakePhotoIntent() {
         if (getApplicationContext().getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA)) {
             // check and ask for the necessary permissions
-            // requestPermission(Manifest.permission.CAMERA, CAMERA_PERMISSION_CODE);
             if (ContextCompat.checkSelfPermission(
                     MainActivity.this, Manifest.permission.CAMERA) ==
                     PackageManager.PERMISSION_GRANTED) {
                 // You can use the API that requires the permission.
                 this.takePhoto();
             } else {
-                // Ssk for the permission directly. The result is registered and handled.
+                // Ask for the permission directly. The result is registered and handled.
                 requestPermissionLauncher.launch(Manifest.permission.CAMERA);
             }
         } else {
@@ -222,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void takePhoto() {
         // Intent describes the action that we want to do. So create one.
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         File resultPhotoFile = null;
         try {
             // try to save the photo
@@ -236,9 +234,9 @@ public class MainActivity extends AppCompatActivity {
             Uri resultPhotoURI = FileProvider.getUriForFile(this,
                     "com.example.android.file_provider", resultPhotoFile);
             // save the actual photo to the photo file via an intent
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, resultPhotoURI);
+            takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, resultPhotoURI);
             try {
-                takePhotoLauncher.launch(takePictureIntent);
+                takePhotoLauncher.launch(takePhotoIntent);
             } catch (Exception e) {
                 System.out.println("Failed to start the camera intent.");
             }
@@ -249,8 +247,6 @@ public class MainActivity extends AppCompatActivity {
     public void startEvaluationProcess(View view) {
         String selectedMode = sharedAppPref.getString("mode",
                 getString(R.string.default_mode));
-        System.out.println("Mode");
-        System.out.println(selectedMode);
         String[] modes = getResources().getStringArray(R.array.mode_values);
 
         if (selectedMode.equals(modes[0])) { // Direct evaluation
