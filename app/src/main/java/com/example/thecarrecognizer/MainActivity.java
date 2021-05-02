@@ -135,7 +135,25 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                     }
                 });
 
+        // handle received by sharing photo
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if (type.startsWith("image/")) {
+                handleSendImage(intent); // handle single image receive
+            }
+        }
+
         //</editor-fold>
+    }
+
+    void handleSendImage(Intent intent) {
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            decodeAndShowPhotoFromUri(imageUri);
+        }
     }
 
     /**
