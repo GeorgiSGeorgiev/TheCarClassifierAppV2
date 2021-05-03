@@ -1,6 +1,8 @@
 package com.example.thecarrecognizer;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
@@ -18,6 +20,7 @@ public class MainSettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mainView = findViewById(R.id.fragmentContainerView);
         this.updateBackground();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
             // Contains two different methods of creating a new fragment that contains the
@@ -37,7 +40,27 @@ public class MainSettingsActivity extends AppCompatActivity {
         // this.getView().setBackgroundColor(Color.WHITE);
     }
 
-     public static void setBackgroundColor(int color) {
+    /**
+     * Called when the actionbar "return" (the back arrow) button has been clicked.
+     * @param item The actionbar menu item that has been clicked.
+     * @return  True to activate the return operation.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close the settings activity
+            return true; // return to the main activity
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    public static void setBackgroundColor(int color) {
         mainView.setBackgroundColor(color);
      }
 

@@ -142,14 +142,14 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("image/")) {
-                handleSendImage(intent); // handle single image receive
+                handleReceivedImage(intent); // handle single image receive
             }
         }
 
         //</editor-fold>
     }
 
-    void handleSendImage(Intent intent) {
+    void handleReceivedImage(Intent intent) {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
             decodeAndShowPhotoFromUri(imageUri);
