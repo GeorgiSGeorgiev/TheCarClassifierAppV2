@@ -4,7 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.example.thecarrecognizer.ml.EfficientnetB0;
+// import com.example.thecarrecognizer.ml.EfficientnetB0;
+import com.example.thecarrecognizer.ml.Efficientnetb0V7;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.common.FileUtil;
@@ -39,10 +40,12 @@ public class MLModel {
     private void processImage(Bitmap photoBitmap) {
         ImageProcessor imageProcessor =
                 new ImageProcessor.Builder()
-                        .add(new ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
+                        .add(new ResizeOp(224, 224,
+                                ResizeOp.ResizeMethod.BILINEAR))
                         .build();
 
-        // Create a TensorImage instance. The data type is Float32 which matches the NN model input type.
+        // Create a TensorImage instance.
+        // The data type is Float32 which matches the NN model input type.
         TensorImage tImage = new TensorImage(DataType.FLOAT32);
 
         // Load the bitmap and preprocess the image.
@@ -64,14 +67,16 @@ public class MLModel {
         ModelResultPair[] resultArray = new ModelResultPair[5];
         try {
             //Model model = Model.newInstance(mainContext);
-            EfficientnetB0 model = EfficientnetB0.newInstance(mainContext);
+            Efficientnetb0V7 model = Efficientnetb0V7.newInstance(mainContext);
+            //Efficientnetb0V4 model = Efficientnetb0V4.newInstance(mainContext);
             // Creates inputs for reference.
-            TensorBuffer inputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3}, DataType.FLOAT32);
+            TensorBuffer inputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
+                    DataType.FLOAT32);
             inputTensor.loadBuffer(processedImage.getBuffer());
 
             // Runs model inference and gets result.
             //Model.Outputs outputs = model.process(inputTensor);
-            EfficientnetB0.Outputs outputs = model.process(inputTensor);
+            Efficientnetb0V7.Outputs outputs = model.process(inputTensor);
             TensorBuffer resultTensor = outputs.getOutputFeature0AsTensorBuffer();
             System.out.println(loadedLabels);
 
@@ -83,7 +88,7 @@ public class MLModel {
                 Map<String, Float> labeledResultMap = labeledProbabilities.getMapWithFloatValue();
                 List<Map.Entry<String, Float>> list = new ArrayList<>(labeledResultMap.entrySet());
                 list.sort(Map.Entry.comparingByValue());
-                // Get the best 5 probabilities with their labels and save them into the result array.
+                // Get the best 5 probabilities with their labels and save them in the result array.
                 for (int i = 0; i < 5; i++) {
                     resultArray[i] = new ModelResultPair(list.get(list.size() - i - 1));
                     // System.out.println(resultArray[i]);
@@ -92,7 +97,8 @@ public class MLModel {
             // Releases model resources if no longer used.
             model.close();
         } catch (IOException e) {
-            Log.e("tfliteModel", "Error: The model loading failed. File could not be opened.", e);
+            Log.e("tfliteModel",
+                    "Error: The model loading failed. File could not be opened.", e);
         }
         return resultArray;
     }
