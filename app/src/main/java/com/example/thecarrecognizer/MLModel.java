@@ -61,6 +61,10 @@ public class MLModel {
         }
     }
 
+    public List<String> getLoadedLabels() {
+        return this.loadedLabels;
+    }
+
     public ModelResultPair[] evalDirectly(Bitmap photoBitmap) {
         processImage(photoBitmap);
         loadLabels();

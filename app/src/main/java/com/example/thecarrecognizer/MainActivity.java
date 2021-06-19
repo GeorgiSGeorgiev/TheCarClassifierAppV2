@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.*;
+import java.util.List;
 
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
@@ -41,6 +42,8 @@ import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 public class MainActivity extends AppCompatActivity implements PhotoUtilityActivityInterface {
     // result store point so the result can be showed more than once on user request
     String evaluationResult;
+    String bestEvaluationResult;
+    List<String> loadedLabels = null;
     SharedPreferences sharedAppPref; // the shared settings of the application
 
     // The main and only buttons of this activity
@@ -323,8 +326,10 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
     private void handleModel() {
         MLModel model = new MLModel(MainActivity.this);
         ModelResultPair[] results = model.evalDirectly(this.currentPhotoBitmap);
+        loadedLabels = model.getLoadedLabels();
+        bestEvaluationResult = results[0].getLabel();
         evaluationResult = model.convertPairArrayToString(results);
-        this.showAlertDialog(this.evaluationResult, false);
+        this.showResultDialog(this.evaluationResult);
         this.showResultsButton.setEnabled(evaluationResult != null && !evaluationResult.equals(""));
     }
 
@@ -350,7 +355,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
      * @param view The view which calls the method.
      */
     public void getDirectResult(View view) {
-        this.showAlertDialog(this.evaluationResult, false);
+        this.showResultDialog(this.evaluationResult);
     }
 
     /**
@@ -366,6 +371,74 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                     .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
                     .setCancelable(cancelable)
                     .show(); // show the dialog until the 'OK' button is clicked
+        }
+    }
+
+    /**
+     * Result alert dialog construction and showing tool. Result dialog can browse the web as well.
+     * The URLs can be changed from the "strings" resource file. The URL is chosen according to
+     * the categorization result.
+     * @param message The actual message to be displayed on the dialog.
+     */
+    public void showResultDialog(String message) {
+        int themeID = getDialogThemeID();
+        if (message != null && !message.equals("")) {
+            Uri bestSearchUri = null;
+            Uri dealershipUri = null;
+            // get the right URIs which provide the Internet search part of the result output.
+            if (bestEvaluationResult.equals(loadedLabels.get(0))){
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_full_size_coupe_sedan_cars_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.full_size_coupe_sedan_cars_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(1))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_hatchbacks_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.hatchbacks_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(2))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_muscle_cars_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.muscle_car_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(3))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_pickups_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.pickup_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(4))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_sports_cars_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.sports_cars_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(5))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_suv_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.suv_dealerships_link));
+            } else if (bestEvaluationResult.equals(loadedLabels.get(7))) {
+                bestSearchUri = Uri.parse(getResources()
+                        .getString(R.string.best_van_link));
+                dealershipUri = Uri.parse(getResources().
+                        getString(R.string.van_dealerships_link));
+            }
+
+            Intent bestSearchBrowserIntent = new Intent(Intent.ACTION_VIEW, bestSearchUri);
+            Intent closestDealershipBrowserIntent = new Intent(Intent.ACTION_VIEW, dealershipUri);
+
+            // activate the dialog
+            if (!bestSearchUri.equals(null) && !dealershipUri.equals(null)) {
+                new AlertDialog.Builder(MainActivity.this, themeID)
+                        .setMessage(message) // write the result data on the dialog panel
+                        .setNegativeButton("Buy a Car",
+                                (dialog, id) -> startActivity(closestDealershipBrowserIntent))
+                        .setNeutralButton("Find Best Cars",
+                                (dialog, id) -> startActivity(bestSearchBrowserIntent))
+                        .setPositiveButton("OK", (dialog, id) -> dialog.dismiss())
+                        .setCancelable(false)
+                        .show(); // show the dialog until the 'OK' button is clicked
+            }
+            else showAlertDialog(message, false);
         }
     }
 
