@@ -1,7 +1,7 @@
 BigCoupeOrSedan
 Hatchback
+MuscleCar
 PickUp
-PonyCar
 SportsCar
 SUV
 Unknown
