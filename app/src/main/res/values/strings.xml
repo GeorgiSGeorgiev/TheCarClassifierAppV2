@@ -33,4 +33,125 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- Best cars links -->
+    <string name="best_full_size_coupe_sedan_cars_link">https://www.google.com/search?q=best+
+        full-size+coupe+or+sedan+cars&amp;biw=1920&amp;bih=937&amp;sxsrf=ALeKk02a0FkSP0wAnc1Qke2P-
+        cexMzU0Qg%3A1624098692353&amp;ei=hMfNYIbhFI6-kwWzmp3ACw&amp;oq=best+full-size+coupe+or+
+        sedan+cars&amp;gs_lcp=Cgdnd3Mtd2l6EAw6BwgAEEcQsAM6BwgjELACECdQ9aecAliCspwCYLS5nAJoA3ACeACAAU
+        -IAb8DkgEBNpgBAKABAaoBB2d3cy13aXrIAQjAAQE&amp;sclient=gws-wiz&amp;
+        ved=0ahUKEwiGs4yNv6PxAhUO36QKHTNNB7gQ4dUDCA4
+    </string>
+    <string name="best_hatchbacks_link">https://www.google.com/search?q=best+hatchbacks&amp;
+        bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk01kJE9ULaXuNB5H-C0TwbVrXvCd0Q%3A1624098623171
+        &amp;ei=P8fNYM7VCYPCkwXr6Y74DQ&amp;oq=best+hatcbacks&amp;gs_lcp=Cgdnd3Mtd2l6EAEYADIECAAQDTI
+        HCAAQChDLATIECAAQDTIECAAQDTIECAAQDTIECAAQDTIECAAQDTIECAAQDTIECAAQDTIECAAQDToHCAAQRxCwA1CWA1
+        iWA2DMC2gBcAF4AIABZIgBsgGSAQMxLjGYAQCgAQGqAQdnd3Mtd2l6yAEIwAEB&amp;sclient=gws-wiz
+    </string>
+    <string name="best_muscle_cars_link">https://www.google.com/search?q=best+muscle+cars&amp;btnK=
+        Hledat+Googlem&amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNgxtF63ryKid1N0C5
+        YRw%3A1623096225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig=AINFCbYAAAAAYL6J
+        seNNU4X6dD7mOwugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6EAMYADICCAAyAggAMgUIAB
+        DLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BwgjEOoCECc6CAgAELEDE
+        IMBOgUIABCxAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCxAxCDARDHARDRAzoECCMQJzoECAAQQzoE
+        CC4QQzoICC4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAToFCC4QsQM6FAguELEDEMcBENEDEIsDEKgDENI
+        DOgQIABAKUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0LjWYAQCgAQGqAQdnd3Mtd2l6sAEKuAEC&amp;sclie
+        nt=gws-wiz
+    </string>
+    <string name="best_pickups_link">https://www.google.com/search?q=best+pickups&amp;
+        btnK=Hledat+Googlem&amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNgxtF63ryKid
+        1N0C5YRw%3A1623096225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig=AINFCbY
+        AAAAAYL6JseNNU4X6dD7mOwugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6EAMYADICC
+        AAyAggAMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6Bwgj
+        EOoCECc6CAgAELEDEIMBOgUIABCxAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCxAxCDARDHARDRA
+        zoECCMQJzoECAAQQzoECC4QQzoICC4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAToFCC4QsQM6FAgu
+        ELEDEMcBENEDEIsDEKgDENIDOgQIABAKUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0LjWYAQCgAQGqAQdnd
+        3Mtd2l6sAEKuAEC&amp;sclient=gws-wiz
+    </string>
+    <string name="best_sports_cars_link">https://www.google.com/search?q=best+sports+cars&amp;btnK=
+        Hledat+Googlem&amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNgxtF63ryKid1N0C5
+        YRw%3A1623096225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig=AINFCbYAAAAAYL6J
+        seNNU4X6dD7mOwugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6EAMYADICCAAyAggAMgUIAB
+        DLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BwgjEOoCECc6CAgAELEDE
+        IMBOgUIABCxAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCxAxCDARDHARDRAzoECCMQJzoECAAQQzoE
+        CC4QQzoICC4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAToFCC4QsQM6FAguELEDEMcBENEDEIsDEKgDENI
+        DOgQIABAKUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0LjWYAQCgAQGqAQdnd3Mtd2l6sAEKuAEC&amp;sclie
+        nt=gws-wiz
+    </string>
+    <string name="best_suv_link">https://www.google.com/search?q=best+suv&amp;btnK=Hledat+Googlem
+        &amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNgxtF63ryKid1N0C5YRw%3A162309
+        6225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig=AINFCbYAAAAAYL6JseNNU4X6dD
+        7mOwugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6EAMYADICCAAyAggAMgUIABDLATIFCA
+        AQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BwgjEOoCECc6CAgAELEDEIMBOgU
+        IABCxAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCxAxCDARDHARDRAzoECCMQJzoECAAQQzoECC4Q
+        QzoICC4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAToFCC4QsQM6FAguELEDEMcBENEDEIsDEKgDENIDO
+        gQIABAKUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0LjWYAQCgAQGqAQdnd3Mtd2l6sAEKuAEC&amp;sclient=
+        gws-wiz
+    </string>
+    <string name="best_van_link">https://www.google.com/search?q=best+vans&amp;btnK=Hledat+Googlem
+        &amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNgxtF63ryKid1N0C5YRw%3A1623096
+        225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig=AINFCbYAAAAAYL6JseNNU4X6dD7m
+        Owugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6EAMYADICCAAyAggAMgUIABDLATIFCAAQy
+        wEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywE6BwgjEOoCECc6CAgAELEDEIMBOgUIABC
+        xAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCxAxCDARDHARDRAzoECCMQJzoECAAQQzoECC4QQzoIC
+        C4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAToFCC4QsQM6FAguELEDEMcBENEDEIsDEKgDENIDOgQIABA
+        KUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0LjWYAQCgAQGqAQdnd3Mtd2l6sAEKuAEC&amp;
+        sclient=gws-wiz
+    </string>
+
+    <!-- Closest car dealerships links -->
+    <string name="full_size_coupe_sedan_cars_dealerships_link">https://www.google.com/search?q=
+        coupe+sedan+closest+dealerships&amp;bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk03uV3CXN
+        zwIn3w2wI4Afs-_lnqcgw%3A1624099130240&amp;ei=OsnNYLL1Dcy6kgX_3YroAg&amp;oq=coupe+sedan+clo
+        sest+dealerships&amp;gs_lcp=Cgdnd3Mtd2l6EAwyBQghEKABOgcIABBHELADUNu0CljbtApghrwKaAJwAngAgA
+        GVAYgBlgKSAQMwLjKYAQCgAQKgAQGqAQdnd3Mtd2l6yAEIwAEB&amp;sclient=gws-wiz&amp;ved=0ahUKEwiy-v
+        LdwKPxAhVMnaQKHf-uAi0Q4dUDCA4
+    </string>
+    <string name="hatchbacks_dealerships_link">https://www.google.com/search?q=hatchback+closest
+        +dealerships&amp;bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk004kmrPjLX0jIPhWhpMGKhnuY
+        Wxiw%3A1624099185671&amp;ei=ccnNYL-PKIKtkgWmiaqABw&amp;oq=hatchback+closest+dealerships
+        &amp;gs_lcp=Cgdnd3Mtd2l6EAwyBQghEKABOgcIABBHELADUK6dCFiunQhgjKUIaARwAngAgAFziAG1AZIBAzE
+        uMZgBAKABAqABAaoBB2d3cy13aXrIAQjAAQE&amp;sclient=gws-wiz&amp;ved=0ahUKEwj_i6r4wKPxAhWCl
+        qQKHaaECnAQ4dUDCA4
+    </string>
+    <string name="muscle_car_dealerships_link">https://www.google.com/search?q=muscle+car+closest
+        +dealerships&amp;bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk03YSqpvoim2mQ6T7oaqOzeJEMC
+        OPg%3A1624099206767&amp;ei=hsnNYPL0LYbWkwWbjYL4Dg&amp;oq=muscle+car+closest+dealerships
+        &amp;gs_lcp=Cgdnd3Mtd2l6EAwyCAghEBYQHRAeMggIIRAWEB0QHjIICCEQFhAdEB4yCAghEBYQHRAeMggIIRA
+        WEB0QHjIICCEQFhAdEB4yCAghEBYQHRAeMggIIRAWEB0QHjIICCEQFhAdEB4yCAghEBYQHRAeOgcIABBHELADUO
+        KoB1jiqAdgiLAHaAJwAngAgAFViAGXAZIBATKYAQCgAQKgAQGqAQdnd3Mtd2l6yAEIwAEB&amp;sclient=
+        gws-wiz&amp;ved=0ahUKEwjyz7GCwaPxAhUG66QKHZuGAO8Q4dUDCA4
+    </string>
+    <string name="pickup_dealerships_link">https://www.google.com/search?q=pickup+car+closest+
+        dealerships&amp;bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk01RpzsP627V3FdFxptKCIyz1
+        YiasA%3A1624099225989&amp;ei=mcnNYJrIO47nkgXygJX4Bg&amp;oq=pickup+car+closest+dealersh
+        ips&amp;gs_lcp=Cgdnd3Mtd2l6EAw6BwgAEEcQsANQir4GWIq-BmDjxQZoAnACeACAAVOIAZgBkgEBMpgBAKA
+        BAqABAaoBB2d3cy13aXrIAQjAAQE&amp;sclient=gws-wiz&amp;ved=0ahUKEwja-MaLwaPxAhWOs6QKHXJA
+        BW8Q4dUDCA4
+    </string>
+    <string name="sports_cars_dealerships_link">https://www.google.com/search?q=sports+car+closest
+        +dealerships&amp;hl=cs&amp;biw=1920&amp;bih=937&amp;sxsrf=ALeKk01tR_DoQsPaLbWBIkRGUiNYiNAz
+        eQ%3A1624099289629&amp;ei=2cnNYNnLJZm4sAflwYLIDg&amp;oq=sports+car+closest+dealerships&amp;
+        gs_lcp=Cgdnd3Mtd2l6EAwyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQsAMyBwgAEEcQ
+        sAMyBwgAEEcQsAMyBwgAEEcQsANQAFgAYNO2A2gBcAJ4AIABZogBZpIBAzAuMZgBAKoBB2d3cy13aXrIAQjAAQE
+        &amp;sclient=gws-wiz&amp;ved=0ahUKEwiZnPOpwaPxAhUZHOwKHeWgAOkQ4dUDCA4
+    </string>
+    <string name="suv_dealerships_link">https://www.google.com/search?q=suv+closest+dealership
+        &amp;btnK=Hledat+Googlem&amp;bih=880&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk00616ip1SNg
+        xtF63ryKid1N0C5YRw%3A1623096225948&amp;source=hp&amp;ei=oXu-YMqxN67ClwSDyaC4Ag&amp;iflsig
+        =AINFCbYAAAAAYL6JseNNU4X6dD7mOwugb6hdQ_dr6PJ1&amp;oq=thor+wall&amp;gs_lcp=Cgdnd3Mtd2l6
+        EAMYADICCAAyAggAMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCAAQywEyBQgAEMsBMgUIABDLATIFCA
+        AQywE6BwgjEOoCECc6CAgAELEDEIMBOgUIABCxAzoOCC4QsQMQgwEQxwEQowI6CwguELEDEMcBEKMCOg4ILhCx
+        AxCDARDHARDRAzoECCMQJzoECAAQQzoECC4QQzoICC4QsQMQkwI6BwguELEDEEM6AgguOgsILhCxAxDHARCvAT
+        oFCC4QsQM6FAguELEDEMcBENEDEIsDEKgDENIDOgQIABAKUKnSAVii6AFguO0BaAFwAHgAgAGAAYgBqgeSAQM0
+        LjWYAQCgAQGqAQdnd3Mtd2l6sAEKuAEC&amp;sclient=gws-wiz
+    </string>
+    <string name="van_dealerships_link">https://www.google.com/search?q=van+closest+dealership
+        &amp;bih=937&amp;biw=1920&amp;hl=cs&amp;sxsrf=ALeKk006Cv6gxCljctEJMeOaI6DubsadUg%3A162
+        4099485423&amp;ei=ncrNYPGIGcX4sAe1hb7YDQ&amp;oq=van+closest+dealership&amp;gs_lcp=Cgdnd
+        3Mtd2l6EAM6BwgjELADECc6BwgAEEcQsAM6BAgAEBM6CggAEAgQBxAeEBM6BggAEAcQHjoFCAAQywE6BggAEAgQ
+        HlDCEVjDGmDkG2gCcAJ4AIABcogB9QSSAQM1LjKYAQCgAQGqAQdnd3Mtd2l6yAEJwAEB&amp;sclient=gws-wiz
+        &amp;ved=0ahUKEwixy6GHwqPxAhVFPOwKHbWCD9sQ4dUDCA4&amp;uact=5
+    </string>
+
 </resources>
