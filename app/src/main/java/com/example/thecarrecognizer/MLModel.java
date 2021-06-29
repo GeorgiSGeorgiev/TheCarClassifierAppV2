@@ -101,64 +101,70 @@ public class MLModel {
             Efficientnetb024 model = Efficientnetb024.newInstance(mainContext);
 
             // Creates inputs for reference.
-            TensorBuffer inputTensor2 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
+            TensorBuffer inputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
                     DataType.FLOAT32);
-            inputTensor2.loadBuffer(originalProcessedImage.getBuffer());
+            inputTensor.loadBuffer(originalProcessedImage.getBuffer());
 
-            TensorBuffer inputTensor3 = null;
+            TensorBuffer grayInputTensor = null;
             if (grayscaleMode) {
-                inputTensor3 = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
+                grayInputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
                         DataType.FLOAT32);
-                inputTensor3.loadBuffer(grayscaleProcessedImage.getBuffer());
+                grayInputTensor.loadBuffer(grayscaleProcessedImage.getBuffer());
             }
             // Runs model inference and gets result.
             //Model.Outputs outputs = model.process(inputTensor);
             //Efficientnetb0V7.Outputs outputs = model.process(inputTensor);
 
-            Efficientnetb024.Outputs outputs2 = model.process(inputTensor2);
-            Efficientnetb024.Outputs outputs3;
-            TensorBuffer resultTensor3 = null;
-            if (grayscaleMode && inputTensor3 != null) {
-                outputs3 = model.process(inputTensor3);
-                resultTensor3 = outputs3.getOutputFeature0AsTensorBuffer();
+            Efficientnetb024.Outputs originalOutputs = model.process(inputTensor);
+            Efficientnetb024.Outputs grayscaleOutputs;
+            TensorBuffer resultGrayscaleTensor = null;
+            if (grayscaleMode && grayInputTensor != null) {
+                grayscaleOutputs = model.process(grayInputTensor);
+                resultGrayscaleTensor = grayscaleOutputs.getOutputFeature0AsTensorBuffer();
             }
 
-            TensorBuffer resultTensor2 = outputs2.getOutputFeature0AsTensorBuffer();
+            TensorBuffer resultTensor = originalOutputs.getOutputFeature0AsTensorBuffer();
 
             if (loadedLabels != null) {
                 // Map of labels and their corresponding probability
-                TensorLabel labeledProbabilities2 = new TensorLabel(loadedLabels, resultTensor2);
+                TensorLabel labeledProbs = new TensorLabel(loadedLabels, resultTensor);
                 // Create a map to access the result probabilities based on their labels.
-                Map<String, Float> labeledResultMap2 = labeledProbabilities2.getMapWithFloatValue();
+                Map<String, Float> labeledResultMap = labeledProbs.getMapWithFloatValue();
 
-                List<Map.Entry<String, Float>> list2 = new ArrayList<>(labeledResultMap2.entrySet());
+                List<Map.Entry<String, Float>> originalMapList =
+                        new ArrayList<>(labeledResultMap.entrySet());
+                // System.out.println(originalMapList);
 
-                System.out.println(list2);
+                originalMapList.sort(Map.Entry.comparingByValue());
 
                 List<Map.Entry<String, Float>> resultList;
-                list2.sort(Map.Entry.comparingByValue());
 
-                float list2TopVal = list2.get(list2.size() - 1).getValue();
+                if (grayscaleMode && resultGrayscaleTensor != null) {
+                    TensorLabel labeledGrayscaleProbs =
+                            new TensorLabel(loadedLabels, resultGrayscaleTensor);
+                    Map<String, Float> labeledGrayResultMap =
+                            labeledGrayscaleProbs.getMapWithFloatValue();
+                    List<Map.Entry<String, Float>> grayMapList =
+                            new ArrayList<>(labeledGrayResultMap.entrySet());
+                    // System.out.println(grayMapList);
+                    grayMapList.sort(Map.Entry.comparingByValue());
 
+                    float origListTopVal = originalMapList
+                            .get(originalMapList.size() - 1).getValue();
+                    float grayListTopVal = grayMapList
+                            .get(grayMapList.size() - 1).getValue();
 
-                if (grayscaleMode && resultTensor3 != null) {
-                    TensorLabel labeledProbabilities3 = new TensorLabel(loadedLabels, resultTensor3);
-                    Map<String, Float> labeledResultMap3 = labeledProbabilities3.getMapWithFloatValue();
-                    List<Map.Entry<String, Float>> list3 = new ArrayList<>(labeledResultMap3.entrySet());
-                    System.out.println(list3);
-                    list3.sort(Map.Entry.comparingByValue());
-                    float list3TopVal = list3.get(list3.size() - 1).getValue();
-                    if (list3TopVal > list2TopVal - 0.05) {
-                        resultList = list3;
-                        System.out.println("LIST 3");
+                    if (grayListTopVal > origListTopVal - 0.05) {
+                        resultList = grayMapList;
+                        System.out.println("Grayscale results chosen");
                     }
                     else {
-                        resultList = list2;
-                        System.out.println("LIST 2");
+                        resultList = originalMapList;
+                        System.out.println("Original results chosen");
                     }
                 } else {
-                    resultList = list2;
-                    System.out.println("LIST 2");
+                    resultList = originalMapList;
+                    System.out.println("Original results chosen");
                 }
 
 

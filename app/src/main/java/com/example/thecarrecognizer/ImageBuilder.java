@@ -79,21 +79,32 @@ public class ImageBuilder {
         return resultBitmap;
     }
 
-    public static Bitmap fromRGBtoGrayscale(Bitmap origBitmap)
-    {
-        int width, height;
-        height = origBitmap.getHeight();
-        width = origBitmap.getWidth();
+    /**
+     * Convert RGB image to a ARGB_8888 grayscale image. The alpha channel is completely ignored,
+     * may result into issues if it is used in the original image.
+     * @param originalBitmap The original image.
+     * @return Converted image into ARGB_8888 grayscale.
+     */
+    public static Bitmap fromRGBtoGrayscale(Bitmap originalBitmap) {
+        int height = originalBitmap.getHeight();
+        int width = originalBitmap.getWidth();
 
+        // Set the new grayscale bitmap.
         Bitmap grayscaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(grayscaleBitmap);
-        Paint paint = new Paint();
-        ColorMatrix colorMatrix = new ColorMatrix();
+        // Set the canvas where the result grayscale image will be drawn.
+        // The grayscaleBitmap will be in the Canvas.
+        Canvas grayscaleCanvas = new Canvas(grayscaleBitmap);
+        Paint paint = new Paint(); // Init a new paint.
+        ColorMatrix colorMatrix = new ColorMatrix(); // Matrix which will set tha saturation value.
 
         colorMatrix.setSaturation(0f); // set saturation to 0, i.e. no colors will be visible
-        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-        paint.setColorFilter(filter);
-        c.drawBitmap(origBitmap, 0, 0, paint);
+        // Use the above matrix to create a new filter which is changing the saturation to 0.
+        ColorMatrixColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+        // Create a paint which contains the saturation filter.
+        paint.setColorFilter(colorFilter);
+        // Apply the new paint to the original Image and draw the result on the canvas.
+        // The canvas updates the grayscale Bitmap as well.
+        grayscaleCanvas.drawBitmap(originalBitmap, 0, 0, paint);
         return grayscaleBitmap;
     }
 }
