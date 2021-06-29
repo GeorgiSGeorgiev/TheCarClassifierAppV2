@@ -26,7 +26,7 @@ public class MLModel {
     private TensorImage originalProcessedImage;
     private TensorImage grayscaleProcessedImage;
 
-    final String ASSOCIATED_AXIS_LABELS = "labels_cars.txt";
+    final public static String ASSOCIATED_AXIS_LABELS = "labels_cars.txt";
     private List<String> loadedLabels = null;
 
     public MLModel(Context appContext) {

@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
     }
 
     // get the dialog style ID directly from the resources
-    private int getDialogThemeID() {
+    public int getDialogThemeID() {
         int themeID = 0;
         if (ThemeController.chosenTheme == ThemeController.LIGHT) {
             themeID = R.style.LightDialogTheme;
@@ -313,7 +313,9 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
      * The connection settings can be changed via the application settings menu.
      */
     public void createSendImgConfirmDialog() {
-        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this);
+        int themeID = getDialogThemeID();
+        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this,
+                themeID);
         String alertMessage = "The selected image will be sent to the server for evaluation. " +
                               "Do you wish to continue?";
         alertDiaBuilder.setMessage(alertMessage)
@@ -437,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                         .setCancelable(false)
                         .show(); // show the dialog until the 'OK' button is clicked
             }
-            else showAlertDialog(message, false);
+            else showAlertDialog(message, false); // result is Unknown => No searching
         }
     }
 

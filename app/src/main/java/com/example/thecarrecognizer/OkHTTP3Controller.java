@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.tensorflow.lite.support.common.FileUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -77,8 +79,9 @@ public class OkHTTP3Controller {
                     throw new IOException("Empty return message body");
                 }
                 responseText = resp.body().string();
+                int themeID = activity.getDialogThemeID();
                 // System.out.println(responseText);
-                activity.runOnUiThread(() -> new AlertDialog.Builder(activity)
+                activity.runOnUiThread(() -> new AlertDialog.Builder(activity, themeID)
                         .setMessage(responseText) // write the result data on the dialog panel
                         .setPositiveButton("OK", (dialog, id) -> enhancedDialogDismiss(dialog))
                         .setCancelable(false)
@@ -87,9 +90,26 @@ public class OkHTTP3Controller {
         });
     }
 
+    // Saves the result in the corresponding variables of the main activity and activates the
+    // "Show result" button. After that closes the dialog.
     private void enhancedDialogDismiss(DialogInterface dialog) {
         if (responseText != null && !responseText.equals("")) {
             this.activity.evaluationResult = responseText;
+            String[] firstWordExtractionArray = responseText.split(", ", 2);
+            // If the result is Unknown then there won't be any internet browsing options.
+            if (firstWordExtractionArray[0].equals("Unknown")) {
+                this.activity.bestEvaluationResult = "";
+            }
+            else {
+                this.activity.bestEvaluationResult = firstWordExtractionArray[0];
+                try {
+                    this.activity.loadedLabels =
+                            FileUtil.loadLabels(this.activity.getApplicationContext(),
+                                    MLModel.ASSOCIATED_AXIS_LABELS);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         this.activity.showResultsButton
                 .setEnabled(activity.evaluationResult != null &&
