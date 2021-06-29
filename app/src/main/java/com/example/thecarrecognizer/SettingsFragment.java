@@ -10,6 +10,7 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SwitchPreferenceCompat;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
@@ -19,6 +20,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         ListPreference themePreference = findPreference("theme");
         ListPreference modePreference = findPreference("mode");
+
         this.setListPreferenceSummary(themePreference);
         this.setListPreferenceSummary(modePreference);
 
@@ -29,6 +31,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.setIntOnlyTextPreference(portPreference);
     }
 
+    // Update the state text of the setting. Changes according to the currently selected option.
     private void setTextPreferenceSummary(EditTextPreference inputPreference) {
         if (inputPreference != null) {
             inputPreference
@@ -43,6 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    // Update the state text of the setting. Changes according to the currently selected option.
     private void setListPreferenceSummary(ListPreference inputPreference) {
         if (inputPreference != null) {
             inputPreference
@@ -57,6 +61,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
+    // change the preference input type to number only
     private void setIntOnlyTextPreference(EditTextPreference textPreference) {
         if (textPreference != null) {
             textPreference.setOnBindEditTextListener(
@@ -87,6 +92,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                     ResourcesCompat.getColor(getResources(),
                                             R.color.CyberBlack, null));
                         }
+                        break;
+                    case "grayscaleBoosting":
+                        MLModel.grayscaleMode = sharedPreferences.getBoolean(key, false);
                         break;
                     case "server_IP":
                         MainActivity.serverIP = sharedPreferences.getString(key, "");

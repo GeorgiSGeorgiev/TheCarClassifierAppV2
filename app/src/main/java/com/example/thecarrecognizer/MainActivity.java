@@ -423,11 +423,10 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                         getString(R.string.van_dealerships_link));
             }
 
-            Intent bestSearchBrowserIntent = new Intent(Intent.ACTION_VIEW, bestSearchUri);
-            Intent closestDealershipBrowserIntent = new Intent(Intent.ACTION_VIEW, dealershipUri);
-
             // activate the dialog
-            if (!bestSearchUri.equals(null) && !dealershipUri.equals(null)) {
+            if (bestSearchUri != null && dealershipUri != null) {
+                Intent bestSearchBrowserIntent = new Intent(Intent.ACTION_VIEW, bestSearchUri);
+                Intent closestDealershipBrowserIntent = new Intent(Intent.ACTION_VIEW, dealershipUri);
                 new AlertDialog.Builder(MainActivity.this, themeID)
                         .setMessage(message) // write the result data on the dialog panel
                         .setNegativeButton("Buy a Car",

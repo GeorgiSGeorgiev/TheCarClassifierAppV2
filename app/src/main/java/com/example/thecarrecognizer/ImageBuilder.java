@@ -3,6 +3,10 @@ package com.example.thecarrecognizer;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Environment;
 import android.widget.ImageView;
 
@@ -73,5 +77,23 @@ public class ImageBuilder {
         Bitmap resultBitmap = ImageBuilder.decodePhoto(path, imageView);
         imageView.setImageBitmap(resultBitmap);
         return resultBitmap;
+    }
+
+    public static Bitmap fromRGBtoGrayscale(Bitmap origBitmap)
+    {
+        int width, height;
+        height = origBitmap.getHeight();
+        width = origBitmap.getWidth();
+
+        Bitmap grayscaleBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(grayscaleBitmap);
+        Paint paint = new Paint();
+        ColorMatrix colorMatrix = new ColorMatrix();
+
+        colorMatrix.setSaturation(0f); // set saturation to 0, i.e. no colors will be visible
+        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
+        paint.setColorFilter(filter);
+        c.drawBitmap(origBitmap, 0, 0, paint);
+        return grayscaleBitmap;
     }
 }

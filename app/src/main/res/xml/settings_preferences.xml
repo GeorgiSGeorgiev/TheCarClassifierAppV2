@@ -20,6 +20,14 @@
             app:entryValues="@array/mode_values"
             app:defaultValue="@string/default_mode"/>
 
+        <SwitchPreferenceCompat
+            app:key="grayscaleBoosting"
+            app:title="Enable grayscale boosting"
+            app:defaultValue="true"
+            app:summary="Evaluate both the original and the grayscale image and choose the more accurate result"
+            />
+
+
     </PreferenceCategory>
 
 
