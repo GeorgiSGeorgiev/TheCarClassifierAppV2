@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
 
         mainLayout = findViewById(R.id.mainLayout); // needed to change the background color
 
-        // Buttons init:
+        // Buttons initialization:
         selectPhotoButton = findViewById(R.id.selectPhotoButton);
         evalButton = findViewById(R.id.evalButton);
         showResultsButton = findViewById(R.id.showResultsButton);
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         this.currentPhotoBitmap = BitmapFactory.decodeResource(this.getResources(),
                 R.drawable.porsche_911_gts);
 
-        // get saved cached data and restore the settings to the last available state
+        // Get saved cached data and restore the settings to the last available state.
         sharedAppPref = getDefaultSharedPreferences(this);
         this.updateAppSettings();
 
@@ -138,20 +138,21 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                     }
                 });
 
-        // handle received by sharing photo
+        // Handle received by sharing image.
         Intent intent = getIntent();
         String action = intent.getAction();
         String type = intent.getType();
 
         if (Intent.ACTION_SEND.equals(action) && type != null) {
             if (type.startsWith("image/")) {
-                handleReceivedImage(intent); // handle single image receive
+                handleReceivedImage(intent); // Handle single image receive.
             }
         }
 
         //</editor-fold>
     }
 
+    // Shared image decoder.
     void handleReceivedImage(Intent intent) {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (imageUri != null) {
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(MainActivity.this,
                 themeID);
         DialogInterface.OnClickListener dialogOnClickL = (dialogInterface, i) -> {
-            // different options user can choose
+            // Different options user can choose from in the application:
             switch (options[i]) {
                 case takePhoto:
                     handleTakePhotoIntent();
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                     break;
             }
         };
-        // set the dialog color according to the chosen application theme
+        // Set the dialog color according to the chosen application theme.
         if (ThemeController.chosenTheme == ThemeController.LIGHT) {
             alertDiaBuilder.setItems(options, dialogOnClickL);
         } else if (ThemeController.chosenTheme == ThemeController.DARK) {
@@ -206,7 +207,9 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         this.currentPhotoBitmap = ((BitmapDrawable) mainImageView.getDrawable()).getBitmap();
     }
 
-    // get the dialog style ID directly from the resources
+    /**
+     * Get the style ID of the dialogs directly from the application resources.
+     */
     public int getDialogThemeID() {
         int themeID = 0;
         if (ThemeController.chosenTheme == ThemeController.LIGHT) {
@@ -217,7 +220,10 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         return themeID;
     }
 
-    // Main entry point of the photo taking.
+    /**
+     * Main entry point of the photo taking. Handles the Take Photo intent which activates
+     * the camera of the mobile device if the necessary permissions were granted.
+     */
     public void handleTakePhotoIntent() {
         if (getApplicationContext().getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA)) {
@@ -236,8 +242,9 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         }
     }
 
-    // camera permission launcher
+    // Camera permission launcher
     private final ActivityResultLauncher<String> requestPermissionLauncher =
+            // Check if permission is granted. If not, ask for it.
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted-> {
                 if (isGranted) {
                     this.takePhoto();
@@ -324,20 +331,29 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         alertDiaBuilder.show();
     }
 
-    // evaluates the neural network model directly and saves the evaluation result
+    // Evaluates the neural network model directly and saves the evaluation results.
     private void handleModel() {
+        // Initialize the model.
         MLModel model = new MLModel(MainActivity.this);
+        // Evaluate the model.
         ModelResultPair[] results = model.evalDirectly(this.currentPhotoBitmap);
+        // Get the class names.
         loadedLabels = model.getLoadedLabels();
+        // Save the best prediction.
         bestEvaluationResult = results[0].getLabel();
+        // Convert the predictions to a string.
         evaluationResult = model.convertPairArrayToString(results);
+        // Show the results to the user via a dialog.
         this.showResultDialog(this.evaluationResult);
+        // Enable the "Show Results" button.
         this.showResultsButton.setEnabled(evaluationResult != null && !evaluationResult.equals(""));
     }
 
-    // tries to connect with the distant server which is supposed to make the evaluation and return
-    // the final result to the application. The connection won't be successful if the wrong settings
-    // were added or of the server is offline.
+    /**
+     * Tries to connect with the distant server which is supposed to make the evaluation and return
+     * the final result to the application. The connection won't be successful if the wrong settings
+     * were added or of the server is offline.
+     */
     public void handleServerCommunication() {
         OkHTTP3Controller okHTTP3Controller = new OkHTTP3Controller(MainActivity.this,
                 serverIP, portNumber);
@@ -387,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         if (message != null && !message.equals("")) {
             Uri bestSearchUri = null;
             Uri dealershipUri = null;
-            // get the right URIs which provide the Internet search part of the result output.
+            // Get the right URIs which provide the Internet search part of the result output.
             if (bestEvaluationResult.equals(loadedLabels.get(0))){
                 bestSearchUri = Uri.parse(getResources()
                         .getString(R.string.best_full_size_coupe_sedan_cars_link));
@@ -425,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
                         getString(R.string.van_dealerships_link));
             }
 
-            // activate the dialog
+            // Activate the dialog.
             if (bestSearchUri != null && dealershipUri != null) {
                 Intent bestSearchBrowserIntent = new Intent(Intent.ACTION_VIEW, bestSearchUri);
                 Intent closestDealershipBrowserIntent = new Intent(Intent.ACTION_VIEW, dealershipUri);
@@ -498,7 +514,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         mainLayout.setBackgroundColor(color);
     }
 
-    //
+    // Checks the status of the current theme and updates the theme accordingly.
     private void updateBackground() {
         if (ThemeController.chosenTheme == ThemeController.LIGHT) {
             setBackgroundColor(getColor(R.color.White));
