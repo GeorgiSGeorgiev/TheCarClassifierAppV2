@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements PhotoUtilityActiv
         if (ThemeController.chosenTheme == ThemeController.LIGHT) {
             alertDiaBuilder.setItems(options, dialogOnClickL);
         } else if (ThemeController.chosenTheme == ThemeController.DARK) {
+            // ArrayAdapter is a controller of the list view in the "Select Image" dialog.
             ArrayAdapter<String> arrayAdapter = ThemeController.getCustomColoredListItemsAdapter(
                     MainActivity.this, options, getColor(R.color.White));
             alertDiaBuilder.setAdapter(arrayAdapter, dialogOnClickL);
