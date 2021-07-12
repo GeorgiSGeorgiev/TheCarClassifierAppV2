@@ -27,10 +27,14 @@ public class ImageBuilder {
      * @throws IOException The file creation may fail.
      */
     public static File createEmptyPhotoFile(Context currentContext) throws IOException {
+        // Create a timestamp which will be part of the name. This way we create a pseudo-unique
+        // file name.
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
                 .format(new Date());
         String photoFileName = "JPEG_" + timeStamp + "_";
+        // Get the phone image storage directory.
         File storageDir = currentContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        // Return a temporary file created in the storage directory.
         return File.createTempFile(
                 photoFileName,
                 ".jpg",
@@ -39,7 +43,8 @@ public class ImageBuilder {
     }
 
     /**
-     * Gets the image bitmap from the selected path and resizes its bitmap so it can fit in the selected ImageView.
+     * Gets the image bitmap from the selected path and resizes its bitmap so it can fit in the
+     * selected ImageView.
      * @param path The path of the image from which the bitmap will be taken.
      * @param imageView The target ImageView component. Needed just to resize the bitmap.
      * @return The extracted bitmap.
@@ -49,21 +54,32 @@ public class ImageBuilder {
             throw new IllegalArgumentException("Path is empty.");
         }
         Bitmap resultBitmap;
+        // Get the imageView width and Height.
         int targetWidth = imageView.getWidth();
         int targetHeight = imageView.getHeight();
 
-        BitmapFactory.Options bmfOptions = new BitmapFactory.Options();
-        bmfOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, bmfOptions);
 
-        int photoWidth = bmfOptions.outWidth;
-        int photoHeight = bmfOptions.outHeight;
+        BitmapFactory.Options bitmapFactoryOptions = new BitmapFactory.Options();
+        // When set to "true", the following method will change only the size of the bitmapFactory
+        bitmapFactoryOptions.inJustDecodeBounds = true;
+        // Change the size of the bitmapFactory according to the size of the original image.
+        // Don't return anything, just set the size of the original bitmap directly into our
+        // bitmapFactoryOptions instance.
+        BitmapFactory.decodeFile(path, bitmapFactoryOptions);
 
-        int scaleFactor = Math.max(1, Math.min(photoWidth / targetWidth, photoHeight / targetHeight));
+        // Get the bitmap height and width we just got from the original image bitmap.
+        int photoWidth = bitmapFactoryOptions.outWidth;
+        int photoHeight = bitmapFactoryOptions.outHeight;
 
-        bmfOptions.inJustDecodeBounds = false;
-        bmfOptions.inSampleSize = scaleFactor;
-        resultBitmap = BitmapFactory.decodeFile(path, bmfOptions);
+        // Find the maximum scaling factor so we can resize with it the original image
+        // to be able to put it directly into the imageView without any additional cutting.
+        int scaleFactor = Math.
+                max(1, Math.min(photoWidth / targetWidth, photoHeight / targetHeight));
+
+        // Set the decoder to return a new bitmap instead of modifying the options.
+        bitmapFactoryOptions.inJustDecodeBounds = false;
+        bitmapFactoryOptions.inSampleSize = scaleFactor; // Set the scaling factor.
+        resultBitmap = BitmapFactory.decodeFile(path, bitmapFactoryOptions);
         return resultBitmap;
     }
 
