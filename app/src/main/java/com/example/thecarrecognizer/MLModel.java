@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-//import com.example.thecarrecognizer.ml.EfficientnetB0;
+// Import the EfficientNetB0 model trained on our dataset.
 import com.example.thecarrecognizer.ml.Efficientnetb024;
 
 import org.tensorflow.lite.DataType;
@@ -20,6 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class which represents the convolutional neural network model which can be evaluated from
+ * the application. Contains mainly a link to the image, evaluation methods and supporting methods.
+ */
 public class MLModel {
     public static boolean grayscaleMode = true;
     private final Context mainContext;
@@ -95,34 +99,35 @@ public class MLModel {
         loadLabels();
         ModelResultPair[] resultArray = new ModelResultPair[5];
         try {
-            //Model model = Model.newInstance(mainContext);
-            //Efficientnetb0V7 model = Efficientnetb0V7.newInstance(mainContext);
-
+            // Create a new model instance. In the end of this method the instance will be
+            // destroyed to maintain bigger memory efficiency.
             Efficientnetb024 model = Efficientnetb024.newInstance(mainContext);
 
-            // Creates inputs for reference.
+            // Initializes the neural network inputs.
             TensorBuffer inputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
                     DataType.FLOAT32);
+            // Load the already processed image.
             inputTensor.loadBuffer(originalProcessedImage.getBuffer());
 
             TensorBuffer grayInputTensor = null;
             if (grayscaleMode) {
+                // If double evaluation is turned on, then initialize the grayscale inputs as well.
                 grayInputTensor = TensorBuffer.createFixedSize(new int[]{1, 224, 224, 3},
                         DataType.FLOAT32);
                 grayInputTensor.loadBuffer(grayscaleProcessedImage.getBuffer());
             }
-            // Runs model inference and gets result.
-            //Model.Outputs outputs = model.process(inputTensor);
-            //Efficientnetb0V7.Outputs outputs = model.process(inputTensor);
 
+            // Runs model inference and directly gets the results.
             Efficientnetb024.Outputs originalOutputs = model.process(inputTensor);
             Efficientnetb024.Outputs grayscaleOutputs;
             TensorBuffer resultGrayscaleTensor = null;
             if (grayscaleMode && grayInputTensor != null) {
+                // If double evaluation is ON, then process the grayscale image as well.
                 grayscaleOutputs = model.process(grayInputTensor);
                 resultGrayscaleTensor = grayscaleOutputs.getOutputFeature0AsTensorBuffer();
             }
 
+            // Convert the output features to a tensor buffer.
             TensorBuffer resultTensor = originalOutputs.getOutputFeature0AsTensorBuffer();
 
             if (loadedLabels != null) {
@@ -131,29 +136,35 @@ public class MLModel {
                 // Create a map to access the result probabilities based on their labels.
                 Map<String, Float> labeledResultMap = labeledProbs.getMapWithFloatValue();
 
+                // Convert the map to a list of map entries. We need it to sort the the map entries
+                // according to their values.
                 List<Map.Entry<String, Float>> originalMapList =
                         new ArrayList<>(labeledResultMap.entrySet());
-                // System.out.println(originalMapList);
-
+                // Sort the entries by their values.
                 originalMapList.sort(Map.Entry.comparingByValue());
 
                 List<Map.Entry<String, Float>> resultList;
 
                 if (grayscaleMode && resultGrayscaleTensor != null) {
+                    // The same as above just for grayscale images.
                     TensorLabel labeledGrayscaleProbs =
                             new TensorLabel(loadedLabels, resultGrayscaleTensor);
                     Map<String, Float> labeledGrayResultMap =
                             labeledGrayscaleProbs.getMapWithFloatValue();
                     List<Map.Entry<String, Float>> grayMapList =
                             new ArrayList<>(labeledGrayResultMap.entrySet());
-                    // System.out.println(grayMapList);
                     grayMapList.sort(Map.Entry.comparingByValue());
 
+                    // Get the top value gathered from the colored image.
                     float origListTopVal = originalMapList
                             .get(originalMapList.size() - 1).getValue();
+                    // Get the top value gathered from the RGB image.
                     float grayListTopVal = grayMapList
                             .get(grayMapList.size() - 1).getValue();
 
+                    // If the grayscale image evaluation is more accurate than the colored one
+                    // (plus some offset), then consider the grayscale image result as the final
+                    // one.
                     if (grayListTopVal > origListTopVal - 0.05) {
                         resultList = grayMapList;
                         System.out.println("Grayscale results chosen");
@@ -162,19 +173,20 @@ public class MLModel {
                         resultList = originalMapList;
                         System.out.println("Original results chosen");
                     }
-                } else {
+                } else { // The grayscale evaluation is turned off and we have the original result
                     resultList = originalMapList;
                     System.out.println("Original results chosen");
                 }
 
 
-                // Get the best 5 probabilities with their labels and save them in the result array.
+                // Get the best 5 probabilities with their labels and save them
+                // in the result array.
                 for (int i = 0; i < 5; i++) {
                     resultArray[i] = new ModelResultPair(resultList.get(resultList.size() - i - 1));
                     System.out.println(resultArray[i]);
                 }
             }
-            // Releases model resources if no longer used.
+            // Releases model resources because they are no longer needed.
             model.close();
         } catch (IOException e) {
             Log.e("tfliteModel",
@@ -183,6 +195,11 @@ public class MLModel {
         return resultArray;
     }
 
+    /**
+     * Convert the result pairs to a string.
+     * @param resultPairs The result pairs to be converted.
+     * @return The result pairs in the form of a string each on a separate line.
+     */
     public String convertPairArrayToString(ModelResultPair[] resultPairs) {
         StringBuilder tmpStrBuilder = new StringBuilder();
         for (ModelResultPair resultPair : resultPairs) {
