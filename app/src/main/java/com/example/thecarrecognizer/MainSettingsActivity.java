@@ -8,7 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
 public class MainSettingsActivity extends AppCompatActivity {
-    // there is always just one active activity so this is safe even for multiple settings activities
+    // There is always just one active activity so this is safe
+    // even for multiple settings activities.
     static FragmentContainerView mainView;
 
     public MainSettingsActivity() {
