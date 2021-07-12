@@ -22,7 +22,8 @@ import java.util.Map;
 
 /**
  * Class which represents the convolutional neural network model which can be evaluated from
- * the application. Contains mainly a link to the image, evaluation methods and supporting methods.
+ * the application. Contains mainly a link to the image, evaluation methods and
+ * some supporting methods.
  */
 public class MLModel {
     public static boolean grayscaleMode = true;
