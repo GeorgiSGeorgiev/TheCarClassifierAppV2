@@ -35,6 +35,11 @@ import java.util.List;
 import static androidx.preference.PreferenceManager.getDefaultSharedPreferences;
 
 // Created by: Georgi S. Georgiev
+// The rights to the main car image which is used in the application are reserved by me.
+// It is not contained in the original Cars dataset. It can be used and published freely only with
+// science/research purposes.
+
+// Main information source: https://developer.android.com/guide
 
 // Note 1: this whole project will be referred as "the application"
 // Note 2: the main program which does the evaluation will be referred as "the core"

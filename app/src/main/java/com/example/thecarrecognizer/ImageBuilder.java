@@ -15,6 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+// Created by: Georgi S. Georgiev
+// Main information source: https://developer.android.com/guide
 /**
  * Class which serves as an image processing and reformatting tool.
  * Contains only static methods.

@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-
+// Created by: Georgi S. Georgiev
 /**
  * Class representing one prediction. It contains a class label and a probability.
  */

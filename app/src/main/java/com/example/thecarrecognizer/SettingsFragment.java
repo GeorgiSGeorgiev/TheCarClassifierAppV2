@@ -10,6 +10,8 @@ import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+// Created by: Georgi S. Georgiev
+// Main information source: https://developer.android.com/guide
 
 /**
  * Class representing the settings menu back-end. Here is done the whole manipulation with

@@ -7,6 +7,9 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentContainerView;
 
+// Created by: Georgi S. Georgiev
+// Main information source: https://developer.android.com/guide
+
 public class MainSettingsActivity extends AppCompatActivity {
     // There is always just one active activity so this is safe
     // even for multiple settings activities.

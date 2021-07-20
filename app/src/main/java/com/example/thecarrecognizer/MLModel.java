@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// Created by: Georgi S. Georgiev
+// Main information source: https://www.tensorflow.org/lite/guide/android
+// The guide above contains the TF Lite Android SDK level requirements as well.
+// The link was last accessed and checked on 20.07.2021.
+
 /**
  * Class which represents the convolutional neural network model which can be evaluated from
  * the application. Contains mainly a link to the image, evaluation methods and

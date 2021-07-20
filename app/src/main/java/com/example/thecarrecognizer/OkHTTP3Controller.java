@@ -20,6 +20,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+// Created by: Georgi S. Georgiev
+// Main information source: https://square.github.io/okhttp/
 
 /**
  * Class which defines the HTTP3 communication with the server part of the project.

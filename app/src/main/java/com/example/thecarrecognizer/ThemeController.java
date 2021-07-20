@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+// Created by: Georgi S. Georgiev
+// Main information source: https://developer.android.com/guide
 
 /**
  * The main controller of the application themes.
