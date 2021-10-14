@@ -2,7 +2,7 @@
 
 ## The Car Classifier - The Application
 
-
+This code is part of my (Georgi S. Georgiev's) bachelor thesis "Neural network architectures for mobile devices" so with each usage it has to be cited. The thesis itself is in czech and I have written it as a student of the Charles University in Prague. Permanent link to the thesis can be found here: http://hdl.handle.net/20.500.11956/148274. If there are enough requests, I may try to translate the thesis to English. For more information see the English Abstract of the thesis which can be found in the link above as well.
 
 ### Short Introduction
 
